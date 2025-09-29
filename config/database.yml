@@ -1,0 +1,19 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  host: localhost
+  username: postgres      # change to your PostgreSQL username
+  password: caleb775      # change to your PostgreSQL password
+  pool: 5
+
+development:
+  <<: *default
+  database: student_records_app_development
+
+test:
+  <<: *default
+  database: student_records_app_test
+
+production:
+  <<: *default
+  database: student_records_app_production

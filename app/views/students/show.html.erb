@@ -1,0 +1,81 @@
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h2 class="card-title mb-0">
+            <i class="bi bi-person-circle me-2"></i>
+            Student Details: <%= @student.name %>
+          </h2>
+        </div>
+        <div class="card-body">
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <div class="card bg-light">
+                <div class="card-body text-center">
+                  <h5 class="card-title text-primary">Total Score</h5>
+                  <h2 class="text-primary"><%= @student.total_score %>/40</h2>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card bg-light">
+                <div class="card-body text-center">
+                  <h5 class="card-title text-primary">Percentage</h5>
+                  <h2 class="text-<%= @student.percentage >= 80 ? 'success' : @student.percentage >= 60 ? 'warning' : 'danger' %>">
+                    <%= @student.percentage.round(2) %>%
+                  </h2>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-3 mb-3">
+              <div class="card text-center">
+                <div class="card-body">
+                  <h6 class="card-title">Reading</h6>
+                  <span class="badge bg-info fs-4"><%= @student.reading %></span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3 mb-3">
+              <div class="card text-center">
+                <div class="card-body">
+                  <h6 class="card-title">Writing</h6>
+                  <span class="badge bg-info fs-4"><%= @student.writing %></span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3 mb-3">
+              <div class="card text-center">
+                <div class="card-body">
+                  <h6 class="card-title">Listening</h6>
+                  <span class="badge bg-info fs-4"><%= @student.listening %></span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3 mb-3">
+              <div class="card text-center">
+                <div class="card-body">
+                  <h6 class="card-title">Speaking</h6>
+                  <span class="badge bg-info fs-4"><%= @student.speaking %></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between mt-4">
+            <%= link_to 'Back to Rankings', students_path, class: "btn btn-secondary" %>
+            <div>
+              <%= link_to 'Edit Student', edit_student_path(@student), class: "btn btn-warning me-2" %>
+              <%= link_to 'Delete Student', student_path(@student), 
+                  data: { "turbo-method": "delete", confirm: 'Are you sure you want to delete this student?' }, 
+                  class: "btn btn-danger" %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
