@@ -1,22 +1,18 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Documentation
 
-Things you may want to cover:
+Comprehensive docs are available in `docs/`:
 
-* Ruby version
+- **Index**: `docs/index.md`
+- **Stimulus**: `docs/stimulus/overview.md`
+- **Hello controller**: `docs/stimulus/controllers/hello_controller.md`
+- **JavaScript app entry**: `docs/javascript/app_entry.md`
+- **PWA service worker**: `docs/pwa/service_worker.md`
 
-* System dependencies
+## Quick start
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
+1. Ensure import maps are configured in `config/importmap.rb`.
+2. Include `<%= javascript_importmap_tags %>` in your layout.
+3. Use `data-controller` attributes to attach Stimulus controllers.
+4. Optionally register the service worker for PWA features.
