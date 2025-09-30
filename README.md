@@ -20,3 +20,7 @@ Things you may want to cover:
 * Services (job queues, cache servers, search engines, etc.)
 
 * Deployment instructions
+
+## Documentation
+
+- See `docs/README.md` for the full documentation index.
