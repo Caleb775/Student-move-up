@@ -1,0 +1,48 @@
+<%= form_with(model: [@student, note], local: true, class: "needs-validation", novalidate: true) do |form| %>
+  <% if note.errors.any? %>
+    <div class="alert alert-danger" role="alert">
+      <h4 class="alert-heading">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <%= pluralize(note.errors.count, "error") %> prohibited this note from being saved:
+      </h4>
+      <ul class="mb-0">
+        <% note.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= form.label :content, "Teacher Note", class: "form-label" %>
+    <%= form.text_area :content, class: "form-control", rows: 4, required: true, 
+        placeholder: "Enter your note about this student..." %>
+    <div class="invalid-feedback">
+      Please provide a note.
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between">
+    <%= link_to 'Cancel', student_path(@student), class: "btn btn-danger" %>
+    <%= form.submit class: "btn btn-primary" %>
+  </div>
+<% end %>
+
+<script>
+// Bootstrap form validation
+(function() {
+  'use strict';
+  window.addEventListener('load', function() {
+    var forms = document.getElementsByClassName('needs-validation');
+    var validation = Array.prototype.filter.call(forms, function(form) {
+      form.addEventListener('submit', function(event) {
+        if (form.checkValidity() === false) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  }, false);
+})();
+</script>

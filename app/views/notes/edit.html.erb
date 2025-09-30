@@ -1,2 +1,19 @@
-<h1>Notes#edit</h1>
-<p>Find me in app/views/notes/edit.html.erb</p>
+<% content_for :title, "Edit Note for #{@student.name} - Student Records Management System" %>
+
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow">
+        <div class="card-header bg-warning text-dark">
+          <h2 class="card-title mb-0">
+            <i class="bi bi-pencil-square me-2"></i>
+            Edit Note for <%= @student.name %>
+          </h2>
+        </div>
+        <div class="card-body">
+          <%= render 'form', note: @note %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

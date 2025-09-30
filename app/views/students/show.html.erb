@@ -1,3 +1,5 @@
+<% content_for :title, "#{@student.name} - Student Details - Student Records Management System" %>
+
 <div class="container mt-4">
   <div class="row justify-content-center">
     <div class="col-md-8">
@@ -63,6 +65,49 @@
                 </div>
               </div>
             </div>
+          </div>
+
+          <!-- Notes Section -->
+          <div class="mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="mb-0">
+                <i class="bi bi-sticky me-2"></i>
+                Teacher Notes
+              </h5>
+              <%= link_to 'Add Note', new_student_note_path(@student), class: "btn btn-success btn-sm" %>
+            </div>
+            
+            <% if @student.notes.any? %>
+              <div class="notes-container">
+                <% @student.notes.order(created_at: :desc).each do |note| %>
+                  <div class="card mb-3">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                          <p class="card-text mb-2"><%= note.content %></p>
+                          <small class="text-muted">
+                            <i class="bi bi-clock me-1"></i>
+                            <%= note.created_at.strftime("%B %d, %Y at %I:%M %p") %>
+                          </small>
+                        </div>
+                        <div class="btn-group btn-group-sm" role="group">
+                          <%= link_to 'Edit', edit_student_note_path(@student, note), class: "btn btn-outline-warning btn-sm" %>
+                          <%= link_to 'Delete', student_note_path(@student, note), 
+                              method: :delete, 
+                              data: { confirm: 'Are you sure you want to delete this note?' }, 
+                              class: "btn btn-outline-danger btn-sm" %>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            <% else %>
+              <div class="alert alert-info">
+                <i class="bi bi-info-circle me-2"></i>
+                No notes yet. Click "Add Note" to add the first note for this student.
+              </div>
+            <% end %>
           </div>
 
           <div class="d-flex justify-content-between mt-4">

@@ -1,3 +1,4 @@
-<h1>New Student</h1>
+<% content_for :title, "Edit #{@student.name} - Student Records Management System" %>
+
+<h1>Edit Student</h1>
 <%= render 'form', student: @student %>
-<%= link_to 'Back', students_path %>
