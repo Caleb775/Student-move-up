@@ -1,6 +1,13 @@
 require "test_helper"
 
 class NotesControllerTest < ActionDispatch::IntegrationTest
+  include Devise::Test::IntegrationHelpers
+
+  setup do
+    @user = users(:admin)
+    sign_in @user
+  end
+
   test "should get index" do
     student = students(:one)
     get student_notes_url(student)
