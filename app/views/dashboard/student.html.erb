@@ -1,0 +1,188 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="display-4 text-success">
+      <i class="bi bi-mortarboard me-3"></i>
+      Student Dashboard
+    </h1>
+    <div class="text-muted">
+      <i class="bi bi-calendar3 me-1"></i>
+      <%= Date.current.strftime("%B %d, %Y") %>
+    </div>
+  </div>
+  
+  <!-- Statistics Cards -->
+  <div class="row mb-4">
+    <div class="col-md-3 mb-3">
+      <div class="card text-white bg-success shadow">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5 class="card-title">My Records</h5>
+              <h2 class="mb-0"><%= @my_students.count %></h2>
+            </div>
+            <div class="align-self-center">
+              <i class="bi bi-person-fill" style="font-size: 2rem;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+      <div class="card text-white bg-info shadow">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5 class="card-title">My Score</h5>
+              <h2 class="mb-0">
+                <% my_best = @my_students.maximum(:total_score) %>
+                <%= my_best || 0 %>
+              </h2>
+            </div>
+            <div class="align-self-center">
+              <i class="bi bi-graph-up" style="font-size: 2rem;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+      <div class="card text-white bg-warning shadow">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5 class="card-title">My Percentage</h5>
+              <h2 class="mb-0">
+                <% my_best_percentage = @my_students.maximum(:percentage) %>
+                <%= my_best_percentage ? "#{my_best_percentage.round(1)}%" : "0%" %>
+              </h2>
+            </div>
+            <div class="align-self-center">
+              <i class="bi bi-percent" style="font-size: 2rem;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+      <div class="card text-white bg-primary shadow">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5 class="card-title">My Rank</h5>
+              <h2 class="mb-0">
+                <% if @my_students.any? %>
+                  <% my_best_score = @my_students.maximum(:total_score) %>
+                  <% rank = Student.where('total_score > ?', my_best_score).count + 1 %>
+                  #<%= rank %>
+                <% else %>
+                  N/A
+                <% end %>
+              </h2>
+            </div>
+            <div class="align-self-center">
+              <i class="bi bi-trophy-fill" style="font-size: 2rem;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Quick Actions -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">
+            <i class="bi bi-lightning-fill me-2"></i>
+            Quick Actions
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6 mb-2">
+              <%= link_to students_path, class: "btn btn-outline-primary w-100" do %>
+                <i class="bi bi-people me-2"></i>
+                View All Students
+              <% end %>
+            </div>
+            <div class="col-md-6 mb-2">
+              <%= link_to "#", class: "btn btn-outline-info w-100" do %>
+                <i class="bi bi-graph-up me-2"></i>
+                View My Progress
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <div class="card shadow">
+        <div class="card-header">
+          <h5>
+            <i class="bi bi-person me-2"></i>
+            My Records
+          </h5>
+        </div>
+        <div class="card-body">
+          <% if @my_students.any? %>
+            <ul class="list-group list-group-flush">
+              <% @my_students.each do |student| %>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <%= link_to student.name, student_path(student), class: "text-decoration-none" %>
+                  <span class="badge bg-primary rounded-pill"><%= student.percentage.round(1) %>%</span>
+                </li>
+              <% end %>
+            </ul>
+          <% else %>
+            <div class="text-center py-4">
+              <i class="bi bi-person-x text-muted" style="font-size: 3rem;"></i>
+              <p class="text-muted mt-2">No records found.</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-6">
+      <div class="card shadow">
+        <div class="card-header">
+          <h5>
+            <i class="bi bi-sticky me-2"></i>
+            Recent Notes About Me
+          </h5>
+        </div>
+        <div class="card-body">
+          <% if @recent_notes.any? %>
+            <ul class="list-group list-group-flush">
+              <% @recent_notes.each do |note| %>
+                <li class="list-group-item">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                      <strong><%= note.student.name %></strong><br>
+                      <small class="text-muted"><%= truncate(note.content, length: 50) %></small>
+                    </div>
+                    <small class="text-muted">
+                      <%= time_ago_in_words(note.created_at) %> ago
+                    </small>
+                  </div>
+                </li>
+              <% end %>
+            </ul>
+          <% else %>
+            <div class="text-center py-4">
+              <i class="bi bi-sticky text-muted" style="font-size: 3rem;"></i>
+              <p class="text-muted mt-2">No notes found.</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

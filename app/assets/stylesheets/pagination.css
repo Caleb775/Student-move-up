@@ -1,0 +1,64 @@
+/* Custom pagination styles */
+.pagination-wrapper {
+  margin: 20px 0;
+}
+
+.pagination {
+  margin-bottom: 0;
+}
+
+.page-link {
+  color: #007bff;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  padding: 0.375rem 0.75rem;
+  margin-left: -1px;
+  line-height: 1.25;
+  text-decoration: none;
+}
+
+.page-link:hover {
+  color: #0056b3;
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
+
+.page-item.active .page-link {
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.page-item.disabled .page-link {
+  color: #6c757d;
+  background-color: #fff;
+  border-color: #dee2e6;
+  cursor: not-allowed;
+}
+
+/* Search form styles */
+.search-form {
+  position: relative;
+}
+
+#search-suggestions {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+#search-suggestions .list-group-item {
+  border: none;
+  border-bottom: 1px solid #dee2e6;
+  cursor: pointer;
+}
+
+#search-suggestions .list-group-item:last-child {
+  border-bottom: none;
+}
+
+#search-suggestions .list-group-item:hover {
+  background-color: #f8f9fa;
+}

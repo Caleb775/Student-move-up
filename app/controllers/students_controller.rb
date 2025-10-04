@@ -1,9 +1,11 @@
 class StudentsController < ApplicationController
-  before_action :set_student, only: [ :show, :edit, :update, :destroy ]
+  load_and_authorize_resource
 
   # GET /students
   def index
-    @students = Student.order(percentage: :desc) # top scores first
+    @search_service = StudentSearchService.new(search_params)
+    @students = @search_service.search.page(params[:page]).per(10)
+    @suggestions = @search_service.suggestions if params[:q].present?
   end
 
   # GET /students/:id
@@ -12,13 +14,10 @@ class StudentsController < ApplicationController
 
   # GET /students/new
   def new
-    @student = Student.new
   end
 
   # POST /students
   def create
-    @student = Student.new(student_params)
-    calculate_scores(@student)
     if @student.save
       redirect_to @student, notice: "Student successfully created"
     else
@@ -32,9 +31,7 @@ class StudentsController < ApplicationController
 
   # PATCH/PUT /students/:id
   def update
-    @student.assign_attributes(student_params)
-    calculate_scores(@student)
-    if @student.save
+    if @student.update(student_params)
       redirect_to @student, notice: "Student successfully updated"
     else
       render :edit
@@ -47,18 +44,24 @@ class StudentsController < ApplicationController
     redirect_to students_path, notice: "Student successfully deleted"
   end
 
+  # GET /students/search_suggestions
+  def search_suggestions
+    @search_service = StudentSearchService.new(search_params)
+    @suggestions = @search_service.suggestions
+    render json: @suggestions
+  end
+
   private
 
-  def set_student
-    @student = Student.find(params[:id])
-  end
-
   def student_params
-    params.require(:student).permit(:name, :reading, :writing, :listening, :speaking)
+    params.require(:student).permit(:name, :reading, :writing, :listening, :speaking, :user_id)
   end
 
-  def calculate_scores(student)
-    student.total_score = student.reading + student.writing + student.listening + student.speaking
-    student.percentage = (student.total_score / 40.0) * 100  # 4 categories, max 10 each
+  def search_params
+    params.permit(:q, :sort, filters: [
+      :min_score, :max_score, :min_percentage, :max_percentage,
+      :min_reading, :min_writing, :min_listening, :min_speaking,
+      :created_after, :created_before, :user_id
+    ])
   end
 end

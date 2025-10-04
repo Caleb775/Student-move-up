@@ -1,0 +1,166 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="display-4 text-info">
+      <i class="bi bi-person-workspace me-3"></i>
+      Teacher Dashboard
+    </h1>
+    <div class="text-muted">
+      <i class="bi bi-calendar3 me-1"></i>
+      <%= Date.current.strftime("%B %d, %Y") %>
+    </div>
+  </div>
+  
+  <!-- Statistics Cards -->
+  <div class="row mb-4">
+    <div class="col-md-3 mb-3">
+      <div class="card text-white bg-info shadow">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5 class="card-title">My Students</h5>
+              <h2 class="mb-0"><%= @total_students %></h2>
+            </div>
+            <div class="align-self-center">
+              <i class="bi bi-people-fill" style="font-size: 2rem;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+      <div class="card text-white bg-success shadow">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5 class="card-title">My Notes</h5>
+              <h2 class="mb-0"><%= Note.joins(:student).where(students: { user: current_user }).count %></h2>
+            </div>
+            <div class="align-self-center">
+              <i class="bi bi-sticky-fill" style="font-size: 2rem;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+      <div class="card text-white bg-warning shadow">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5 class="card-title">Avg Score</h5>
+              <h2 class="mb-0"><%= @my_students.average(:total_score)&.round(1) || 0 %></h2>
+            </div>
+            <div class="align-self-center">
+              <i class="bi bi-graph-up" style="font-size: 2rem;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+      <div class="card text-white bg-primary shadow">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5 class="card-title">Top Performer</h5>
+              <h2 class="mb-0">
+                <% top_student = @my_students.order(:total_score).last %>
+                <%= top_student ? top_student.name.first(3) : "N/A" %>
+              </h2>
+            </div>
+            <div class="align-self-center">
+              <i class="bi bi-trophy-fill" style="font-size: 2rem;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Quick Actions -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">
+            <i class="bi bi-lightning-fill me-2"></i>
+            Quick Actions
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4 mb-2">
+              <%= link_to students_path, class: "btn btn-outline-primary w-100" do %>
+                <i class="bi bi-people me-2"></i>
+                Student Records
+              <% end %>
+            </div>
+            <div class="col-md-4 mb-2">
+              <%= link_to new_student_path, class: "btn btn-outline-success w-100" do %>
+                <i class="bi bi-person-plus me-2"></i>
+                Add New Student
+              <% end %>
+            </div>
+            <div class="col-md-4 mb-2">
+              <%= link_to "#", class: "btn btn-outline-info w-100" do %>
+                <i class="bi bi-graph-up me-2"></i>
+                View Reports
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h5>My Students</h5>
+        </div>
+        <div class="card-body">
+          <% if @my_students.any? %>
+            <ul class="list-group list-group-flush">
+              <% @my_students.each do |student| %>
+                <li class="list-group-item">
+                  <%= link_to student.name, student_path(student) %>
+                  <span class="badge bg-primary rounded-pill"><%= student.percentage.round(1) %>%</span>
+                </li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p>No students assigned to you.</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h5>Recent Notes</h5>
+        </div>
+        <div class="card-body">
+          <% if @recent_notes.any? %>
+            <ul class="list-group list-group-flush">
+              <% @recent_notes.each do |note| %>
+                <li class="list-group-item">
+                  <strong><%= note.student.name %></strong><br>
+                  <%= truncate(note.content, length: 50) %>
+                  <small class="text-muted"><%= time_ago_in_words(note.created_at) %> ago</small>
+                </li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p>No notes found.</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

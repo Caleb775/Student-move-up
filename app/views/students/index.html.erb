@@ -5,8 +5,28 @@
     <div class="col-12">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="display-4 text-primary">Student Rankings</h1>
-        <%= link_to 'Add New Student', new_student_path, class: "btn btn-primary btn-lg" %>
+        <% if can?(:create, Student) %>
+          <%= link_to 'Add New Student', new_student_path, class: "btn btn-primary btn-lg" %>
+        <% end %>
       </div>
+
+      <!-- Search and Filter Form -->
+      <%= render 'search_form' %>
+
+      <!-- Search Results Info -->
+      <% if params[:q].present? || params[:filters].present? %>
+        <div class="alert alert-info">
+          <i class="bi bi-info-circle"></i>
+          <% if params[:q].present? %>
+            Search results for "<strong><%= params[:q] %></strong>"
+          <% end %>
+          <% if params[:filters].present? %>
+            with applied filters
+          <% end %>
+          - <%= pluralize(@students.total_count, 'student') %> found
+          <%= link_to 'Clear search', students_path, class: "btn btn-sm btn-outline-secondary ms-2" %>
+        </div>
+      <% end %>
 
       <% if @students.any? %>
         <div class="card shadow">
@@ -47,11 +67,19 @@
                       </td>
                       <td>
                         <div class="btn-group" role="group">
-                          <%= link_to 'Show', student_path(student), class: "btn btn-outline-primary btn-sm" %>
-                          <%= link_to 'Edit', edit_student_path(student), class: "btn btn-outline-warning btn-sm" %>
-                          <%= link_to 'Delete', student_path(student), 
-                              data: { "turbo-method": "delete", confirm: 'Are you sure?' }, 
-                              class: "btn btn-outline-danger btn-sm" %>
+                          <% if can?(:show, student) %>
+                            <%= link_to 'Show', student_path(student), class: "btn btn-outline-primary btn-sm" %>
+                          <% end %>
+                          
+                          <% if can?(:update, student) %>
+                            <%= link_to 'Edit', edit_student_path(student), class: "btn btn-outline-warning btn-sm" %>
+                          <% end %>
+                          
+                          <% if can?(:destroy, student) %>
+                            <%= link_to 'Delete', student_path(student), 
+                                data: { "turbo-method": "delete", confirm: 'Are you sure?' }, 
+                                class: "btn btn-outline-danger btn-sm" %>
+                          <% end %>
                         </div>
                       </td>
                     </tr>
@@ -61,12 +89,19 @@
             </div>
           </div>
         </div>
+
+        <!-- Pagination -->
+        <div class="d-flex justify-content-center mt-4">
+          <%= paginate @students %>
+        </div>
       <% else %>
         <div class="card">
           <div class="card-body text-center py-5">
             <h3 class="text-muted">No students yet</h3>
             <p class="text-muted">Get started by adding your first student!</p>
-            <%= link_to 'Add a student', new_student_path, class: "btn btn-primary btn-lg" %>
+            <% if can?(:create, Student) %>
+              <%= link_to 'Add a student', new_student_path, class: "btn btn-primary btn-lg" %>
+            <% end %>
           </div>
         </div>
       <% end %>

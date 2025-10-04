@@ -1,0 +1,99 @@
+<div class="container-fluid d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 1rem 0;">
+  <div class="row w-100 justify-content-center">
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow-lg border-0">
+        <div class="card-body p-3">
+          <!-- Header -->
+          <div class="text-center mb-2">
+            <div class="mb-1">
+              <i class="bi bi-mortarboard-fill text-primary" style="font-size: 2rem;"></i>
+            </div>
+            <h2 class="card-title text-primary mb-0" style="font-size: 1.5rem;">Welcome Back</h2>
+            <p class="text-muted mb-0" style="font-size: 0.9rem;">Sign in to your School Management account</p>
+          </div>
+
+          <!-- Flash Messages -->
+          <% if notice %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <%= notice %>
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          <% end %>
+          
+          <% if alert %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <%= alert %>
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          <% end %>
+
+          <!-- Login Form -->
+          <%= form_for(resource, as: resource_name, url: session_path(resource_name), class: "needs-validation", novalidate: true) do |f| %>
+            <div class="mb-1">
+              <%= f.label :email, class: "form-label" %>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-envelope"></i>
+                </span>
+                <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control", placeholder: "Enter your email", required: true %>
+              </div>
+            </div>
+
+            <div class="mb-1">
+              <%= f.label :password, class: "form-label" %>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-lock"></i>
+                </span>
+                <%= f.password_field :password, autocomplete: "current-password", class: "form-control", placeholder: "Enter your password", required: true %>
+              </div>
+            </div>
+
+            <% if devise_mapping.rememberable? %>
+              <div class="mb-1 form-check">
+                <%= f.check_box :remember_me, class: "form-check-input" %>
+                <%= f.label :remember_me, "Remember me", class: "form-check-label" %>
+              </div>
+            <% end %>
+
+            <div class="d-grid mb-1">
+              <%= f.submit "Sign In", class: "btn btn-primary" %>
+            </div>
+          <% end %>
+
+          <!-- Links -->
+          <div class="text-center">
+            <p class="mb-2">
+              <%= link_to "Forgot your password?", new_password_path(resource_name), class: "text-decoration-none" %>
+            </p>
+            <p class="mb-0">
+              Don't have an account? 
+              <%= link_to "Sign up", new_registration_path(resource_name), class: "text-decoration-none fw-bold" %>
+            </p>
+          </div>
+
+          <!-- Demo Accounts -->
+          <div class="mt-2 p-2 bg-light rounded">
+            <h6 class="text-muted mb-1" style="font-size: 0.8rem;">Demo Accounts:</h6>
+            <div class="row">
+              <div class="col-4">
+                <small class="text-muted" style="font-size: 0.7rem;">Admin</small><br>
+                <code style="font-size: 0.65rem;">admin@example.com</code>
+              </div>
+              <div class="col-4">
+                <small class="text-muted" style="font-size: 0.7rem;">Teacher</small><br>
+                <code style="font-size: 0.65rem;">teacher@example.com</code>
+              </div>
+              <div class="col-4">
+                <small class="text-muted" style="font-size: 0.7rem;">Student</small><br>
+                <code style="font-size: 0.65rem;">student@example.com</code>
+              </div>
+            </div>
+            <small class="text-muted" style="font-size: 0.7rem;">Password: <code style="font-size: 0.65rem;">password123</code></small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

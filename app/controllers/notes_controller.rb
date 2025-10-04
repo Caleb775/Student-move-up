@@ -1,6 +1,6 @@
 class NotesController < ApplicationController
   before_action :set_student
-  before_action :set_note, only: [ :show, :edit, :update, :destroy ]
+  load_and_authorize_resource through: :student
 
   def index
     @notes = @student.notes.order(created_at: :desc)
@@ -10,11 +10,10 @@ class NotesController < ApplicationController
   end
 
   def new
-    @note = @student.notes.build
   end
 
   def create
-    @note = @student.notes.build(note_params)
+    @note.user = current_user if current_user
     if @note.save
       redirect_to student_path(@student), notice: "Note was successfully created."
     else
@@ -44,11 +43,7 @@ class NotesController < ApplicationController
     @student = Student.find(params[:student_id])
   end
 
-  def set_note
-    @note = @student.notes.find(params[:id])
-  end
-
   def note_params
-    params.require(:note).permit(:content)
+    params.require(:note).permit(:content, :user_id)
   end
 end
