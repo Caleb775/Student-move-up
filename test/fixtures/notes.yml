@@ -3,7 +3,9 @@
 one:
   content: MyText
   student: one
+  user: teacher
 
 two:
   content: Another note
   student: one
+  user: admin

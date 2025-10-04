@@ -8,6 +8,7 @@ one:
   speaking: 1
   total_score: 1
   percentage: 1.5
+  user: teacher
 
 two:
   name: MyString
@@ -17,3 +18,4 @@ two:
   speaking: 1
   total_score: 1
   percentage: 1.5
+  user: admin
