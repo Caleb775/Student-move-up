@@ -16,4 +16,4 @@ class Student < ApplicationRecord
     self.total_score = reading + writing + listening + speaking
     self.percentage = (total_score / 40.0) * 100
   end
-end
+end # rubocop:disable Layout/TrailingEmptyLines

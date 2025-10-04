@@ -49,4 +49,4 @@ class Ability
       cannot :manage, :all
     end
   end
-end
+end # rubocop:disable Layout/TrailingEmptyLines

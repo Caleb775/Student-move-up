@@ -16,4 +16,4 @@ class AddSearchIndexesToStudents < ActiveRecord::Migration[8.0]
     # Add index for notes content search
     add_index :notes, :content unless index_exists?(:notes, :content)
   end
-end
+end # rubocop:disable Layout/TrailingEmptyLines

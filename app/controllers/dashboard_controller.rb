@@ -30,4 +30,4 @@ class DashboardController < ApplicationController
     @my_students = Student.where(user: current_user)
     @recent_notes = Note.joins(:student).where(students: { user: current_user }).order(created_at: :desc).limit(5)
   end
-end
+end # rubocop:disable Layout/TrailingEmptyLines

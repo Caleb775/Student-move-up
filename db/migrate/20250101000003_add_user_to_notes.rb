@@ -12,4 +12,4 @@ class AddUserToNotes < ActiveRecord::Migration[8.0]
     # Now make the column non-nullable
     change_column_null :notes, :user_id, false
   end
-end
+end # rubocop:disable Layout/TrailingEmptyLines

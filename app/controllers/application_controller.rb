@@ -30,4 +30,4 @@ class ApplicationController < ActionController::Base
     devise_controller? && (action_name == "new" || action_name == "create")
   end
   helper_method :auth_page?
-end
+end # rubocop:disable Layout/TrailingEmptyLines

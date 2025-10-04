@@ -124,4 +124,4 @@ class StudentSearchService
       students.order(percentage: :desc) # Default: highest scores first
     end
   end
-end
+end # rubocop:disable Layout/TrailingEmptyLines

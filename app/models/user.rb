@@ -26,4 +26,4 @@ class User < ApplicationRecord
   def student?
     role == 0
   end
-end
+end # rubocop:disable Layout/TrailingEmptyLines

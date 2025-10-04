@@ -64,4 +64,4 @@ class StudentsController < ApplicationController
       :created_after, :created_before, :user_id
     ])
   end
-end
+end # rubocop:disable Layout/TrailingEmptyLines

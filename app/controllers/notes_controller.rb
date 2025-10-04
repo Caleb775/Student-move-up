@@ -46,4 +46,4 @@ class NotesController < ApplicationController
   def note_params
     params.require(:note).permit(:content, :user_id)
   end
-end
+end # rubocop:disable Layout/TrailingEmptyLines

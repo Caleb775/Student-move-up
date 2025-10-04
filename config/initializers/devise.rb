@@ -292,4 +292,4 @@ Devise.setup do |config|
   # When set to false, does not sign a user in automatically after their password is
   # changed. Defaults to true, so a user is signed in automatically after a reset.
   # config.sign_in_after_change_password = true
-end
+end # rubocop:disable Layout/TrailingEmptyLines
