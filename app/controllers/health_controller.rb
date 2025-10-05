@@ -1,7 +1,13 @@
 class HealthController < ApplicationController
   # Skip authentication for health checks
   skip_before_action :authenticate_user!
-  skip_before_action :check_authorization
+
+  # Skip authorization callback if it exists
+  begin
+    skip_before_action :check_authorization
+  rescue ArgumentError
+    # Callback doesn't exist, which is fine
+  end
 
   def show
     checks = {
