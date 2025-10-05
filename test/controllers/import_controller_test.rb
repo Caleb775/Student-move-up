@@ -33,7 +33,7 @@ class ImportControllerTest < ActionDispatch::IntegrationTest
     get import_template_url(type: "students", format: "csv")
     assert_response :success
     assert_equal "text/csv", response.content_type
-    assert_includes response.headers["Content-Disposition"], "students_template.csv"
+    assert_includes response.headers["Content-Disposition"], "students_import_template.csv"
   end
 
   test "should download xlsx template for admin" do
@@ -41,7 +41,7 @@ class ImportControllerTest < ActionDispatch::IntegrationTest
     get import_template_url(type: "students", format: "xlsx")
     assert_response :success
     assert_equal "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", response.content_type
-    assert_includes response.headers["Content-Disposition"], "students_template.xlsx"
+    assert_includes response.headers["Content-Disposition"], "students_import_template.xlsx"
   end
 
   test "should require authentication for import" do
@@ -52,12 +52,14 @@ class ImportControllerTest < ActionDispatch::IntegrationTest
   test "should handle invalid template type" do
     sign_in @admin_user
     get import_template_url(type: "invalid", format: "csv")
-    assert_response :not_found
+    assert_response :redirect
+    assert_redirected_to import_index_path
   end
 
   test "should handle invalid template format" do
     sign_in @admin_user
     get import_template_url(type: "students", format: "invalid")
-    assert_response :not_found
+    assert_response :redirect
+    assert_redirected_to import_index_path
   end
 end

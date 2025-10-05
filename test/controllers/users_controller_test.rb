@@ -34,7 +34,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     sign_in @admin_user
     get new_user_url
     assert_response :success
-    assert_select "h1", "New User"
+    assert_select "h1", "Add New User"
   end
 
   test "should create user for admin" do
@@ -75,8 +75,18 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
   test "should destroy user for admin" do
     sign_in @admin_user
+    # Create a test user that can be safely deleted
+    test_user = User.create!(
+      first_name: "Test",
+      last_name: "User",
+      email: "testuser@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+      role: 1
+    )
+
     assert_difference("User.count", -1) do
-      delete user_url(@user)
+      delete user_url(test_user)
     end
     assert_redirected_to users_url
   end
