@@ -102,15 +102,29 @@
               <% end %>
             </div>
             <div class="col-md-3 mb-2">
-              <%= link_to "#", class: "btn btn-outline-info w-100" do %>
-                <i class="bi bi-person-gear me-2"></i>
+              <%= link_to export_path, class: "btn btn-outline-info w-100" do %>
+                <i class="bi bi-download me-2"></i>
+                Export Data
+              <% end %>
+            </div>
+            <div class="col-md-3 mb-2">
+              <%= link_to import_path, class: "btn btn-outline-warning w-100" do %>
+                <i class="bi bi-upload me-2"></i>
+                Import Data
+              <% end %>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3 mb-2">
+              <%= link_to users_path, class: "btn btn-outline-danger w-100" do %>
+                <i class="bi bi-people me-2"></i>
                 Manage Users
               <% end %>
             </div>
             <div class="col-md-3 mb-2">
-              <%= link_to "#", class: "btn btn-outline-warning w-100" do %>
-                <i class="bi bi-download me-2"></i>
-                Export Data
+              <%= link_to api_documentation_path, class: "btn btn-outline-dark w-100" do %>
+                <i class="bi bi-code-slash me-2"></i>
+                API Documentation
               <% end %>
             </div>
           </div>
@@ -165,4 +179,5 @@
       </div>
     </div>
   </div>
+</div>
 </div>

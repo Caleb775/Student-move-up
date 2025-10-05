@@ -1,0 +1,763 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="display-4 text-primary">
+      <i class="bi bi-graph-up me-3"></i>
+      Analytics Dashboard
+    </h1>
+    <div class="text-muted">
+      <i class="bi bi-calendar3 me-1"></i>
+      <%= Date.current.strftime("%B %d, %Y") %>
+    </div>
+  </div>
+  
+  <!-- Key Metrics Cards -->
+  <div class="row mb-4">
+    <div class="col-md-3 mb-3">
+      <div class="card text-white bg-primary shadow">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5 class="card-title">Total Students</h5>
+              <h2 class="mb-0"><%= @total_students %></h2>
+            </div>
+            <div class="align-self-center">
+              <i class="bi bi-people-fill" style="font-size: 2rem;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+      <div class="card text-white bg-success shadow">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5 class="card-title">Average Score</h5>
+              <h2 class="mb-0"><%= @average_score %></h2>
+            </div>
+            <div class="align-self-center">
+              <i class="bi bi-graph-up" style="font-size: 2rem;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+      <div class="card text-white bg-info shadow">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5 class="card-title">Average %</h5>
+              <h2 class="mb-0"><%= @average_percentage %>%</h2>
+            </div>
+            <div class="align-self-center">
+              <i class="bi bi-percent" style="font-size: 2rem;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+      <div class="card text-white bg-warning shadow">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5 class="card-title">Total Notes</h5>
+              <h2 class="mb-0"><%= @total_notes %></h2>
+            </div>
+            <div class="align-self-center">
+              <i class="bi bi-sticky-fill" style="font-size: 2rem;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Skills Breakdown -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">
+            <i class="bi bi-bar-chart-fill me-2"></i>
+            Skills Breakdown
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-3 text-center">
+              <div class="p-3">
+                <h3 class="text-primary"><%= @skills_average[:reading] %></h3>
+                <p class="mb-0">Reading</p>
+                <small class="text-muted">Average Score</small>
+              </div>
+            </div>
+            <div class="col-md-3 text-center">
+              <div class="p-3">
+                <h3 class="text-success"><%= @skills_average[:writing] %></h3>
+                <p class="mb-0">Writing</p>
+                <small class="text-muted">Average Score</small>
+              </div>
+            </div>
+            <div class="col-md-3 text-center">
+              <div class="p-3">
+                <h3 class="text-info"><%= @skills_average[:listening] %></h3>
+                <p class="mb-0">Listening</p>
+                <small class="text-muted">Average Score</small>
+              </div>
+            </div>
+            <div class="col-md-3 text-center">
+              <div class="p-3">
+                <h3 class="text-warning"><%= @skills_average[:speaking] %></h3>
+                <p class="mb-0">Speaking</p>
+                <small class="text-muted">Average Score</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Row 1 -->
+  <div class="row mb-4">
+    <div class="col-md-6 mb-3">
+      <div class="card shadow">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">
+            <i class="bi bi-graph-up me-2"></i>
+            Performance Trends
+          </h5>
+        </div>
+        <div class="card-body">
+          <div style="position: relative; height: 300px;">
+            <canvas id="performanceChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-6 mb-3">
+      <div class="card shadow">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">
+            <i class="bi bi-pie-chart me-2"></i>
+            Score Distribution
+          </h5>
+        </div>
+        <div class="card-body">
+          <div style="position: relative; height: 300px;">
+            <canvas id="distributionChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Row 2 -->
+  <div class="row mb-4">
+    <div class="col-md-6 mb-3">
+      <div class="card shadow">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">
+            <i class="bi bi-radar me-2"></i>
+            Skills Radar
+          </h5>
+        </div>
+        <div class="card-body">
+          <div style="position: relative; height: 300px;">
+            <canvas id="skillsChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-6 mb-3">
+      <div class="card shadow">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">
+            <i class="bi bi-bar-chart me-2"></i>
+            Score Ranges
+          </h5>
+        </div>
+        <div class="card-body">
+          <div style="position: relative; height: 300px;">
+            <canvas id="scoreRangeChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Performers and Recent Activity -->
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card shadow">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">
+            <i class="bi bi-trophy-fill me-2"></i>
+            Top Performers
+          </h5>
+        </div>
+        <div class="card-body">
+          <% if @top_performers.any? %>
+            <ul class="list-group list-group-flush">
+              <% @top_performers.each_with_index do |student, index| %>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <div>
+                    <span class="badge bg-primary me-2">#<%= index + 1 %></span>
+                    <%= link_to student.name, student_path(student), class: "text-decoration-none" %>
+                  </div>
+                  <span class="badge bg-success rounded-pill"><%= student.total_score %> pts</span>
+                </li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p>No students found.</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-6">
+      <div class="card shadow">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">
+            <i class="bi bi-clock-fill me-2"></i>
+            Recent Activity
+          </h5>
+        </div>
+        <div class="card-body">
+          <% if @recent_notes.any? %>
+            <ul class="list-group list-group-flush">
+              <% @recent_notes.each do |note| %>
+                <li class="list-group-item">
+                  <div class="d-flex justify-content-between">
+                    <div>
+                      <strong><%= note.student.name %></strong><br>
+                      <%= truncate(note.content, length: 40) %>
+                    </div>
+                    <small class="text-muted">
+                      <%= time_ago_in_words(note.created_at) %> ago
+                    </small>
+                  </div>
+                </li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p>No recent activity.</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Advanced Analytics Performance Optimizer
+class AnalyticsOptimizer {
+  constructor() {
+    this.cacheKey = 'analytics_data_cache';
+    this.cacheExpiry = 5 * 60 * 1000; // 5 minutes
+    this.charts = new Map();
+    this.observer = null;
+    this.chartInstances = new Map();
+    this.initialized = false;
+    this.init();
+  }
+
+  init() {
+    // Handle both regular page loads and Turbo navigation
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => this.initialize());
+    } else {
+      this.initialize();
+    }
+    
+    // Handle Turbo navigation - use turbo:frame-load for better compatibility
+    document.addEventListener('turbo:load', () => {
+      console.log('Turbo load detected, reinitializing...');
+      // Add a small delay to ensure DOM is fully ready
+      setTimeout(() => {
+        this.cleanup();
+        this.initialize();
+      }, 100);
+    });
+    
+    // Handle Turbo before-cache to cleanup
+    document.addEventListener('turbo:before-cache', () => {
+      console.log('Turbo before-cache, cleaning up...');
+      this.cleanup();
+    });
+    
+    // Handle Turbo before-render to prevent layout issues
+    document.addEventListener('turbo:before-render', () => {
+      console.log('Turbo before-render, cleaning up...');
+      this.cleanup();
+    });
+    
+    // Handle window resize to prevent layout issues
+    window.addEventListener('resize', () => {
+      if (this.chartInstances.size > 0) {
+        console.log('Window resized, resizing charts...');
+        this.chartInstances.forEach((chart, type) => {
+          if (chart && typeof chart.resize === 'function') {
+            chart.resize();
+          }
+        });
+      }
+    });
+  }
+
+  cleanup() {
+    console.log('Cleaning up charts and observers...');
+    
+    // Destroy existing chart instances
+    this.chartInstances.forEach((chart, type) => {
+      if (chart && typeof chart.destroy === 'function') {
+        console.log(`Destroying ${type} chart`);
+        chart.destroy();
+      }
+    });
+    this.chartInstances.clear();
+    this.charts.clear();
+    
+    // Disconnect observer
+    if (this.observer) {
+      this.observer.disconnect();
+      this.observer = null;
+    }
+    
+    // Remove any loading indicators
+    document.querySelectorAll('.spinner-border').forEach(spinner => {
+      spinner.parentNode.remove();
+    });
+    
+    // Reset canvas display
+    document.querySelectorAll('canvas').forEach(canvas => {
+      canvas.style.display = 'block';
+    });
+    
+    // Reset initialization flag
+    this.initialized = false;
+    
+    console.log('Cleanup complete');
+  }
+
+  initialize() {
+    // Only initialize if we're on the analytics page
+    if (!document.getElementById('performanceChart')) {
+      console.log('Not on analytics page, skipping initialization');
+      return;
+    }
+    
+    // Prevent multiple initializations
+    if (this.initialized) {
+      console.log('Already initialized, skipping');
+      return;
+    }
+    
+    console.log('Analytics Optimizer initialized');
+    this.initialized = true;
+    this.showLoadingIndicators();
+    // Skip intersection observer for now to ensure charts load immediately
+    this.loadChartsWithCache();
+  }
+
+  showLoadingIndicators() {
+    const canvases = document.querySelectorAll('canvas');
+    canvases.forEach(canvas => {
+      const loadingDiv = document.createElement('div');
+      loadingDiv.className = 'text-center p-4';
+      loadingDiv.innerHTML = '<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><div class="mt-2">Loading chart...</div>';
+      canvas.parentNode.insertBefore(loadingDiv, canvas);
+      canvas.style.display = 'none';
+    });
+  }
+
+  hideLoadingIndicator(canvas) {
+    const loadingDiv = canvas.parentNode.querySelector('.spinner-border')?.parentNode;
+    if (loadingDiv) {
+      loadingDiv.remove();
+    }
+    canvas.style.display = 'block';
+  }
+
+  setupIntersectionObserver() {
+    if ('IntersectionObserver' in window) {
+      this.observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const canvas = entry.target;
+            const chartType = this.getChartType(canvas);
+            if (chartType && !this.charts.has(chartType)) {
+              // Get cached data for this specific chart
+              const cachedData = this.getCachedData();
+              if (cachedData) {
+                const chartTypes = ['performance', 'skills', 'distribution', 'scoreRange'];
+                const dataIndex = chartTypes.indexOf(chartType);
+                this.createChart(canvas, chartType, cachedData[dataIndex]);
+              } else {
+                this.createChart(canvas, chartType);
+              }
+            }
+          }
+        });
+      }, { rootMargin: '50px' });
+
+      document.querySelectorAll('canvas').forEach(canvas => {
+        this.observer.observe(canvas);
+      });
+    } else {
+      // Fallback for browsers without IntersectionObserver
+      console.log('IntersectionObserver not supported, creating all charts immediately');
+      this.createAllChartsImmediately();
+    }
+  }
+
+  createAllChartsImmediately() {
+    const chartTypes = ['performance', 'skills', 'distribution', 'scoreRange'];
+    chartTypes.forEach(type => {
+      const canvas = document.getElementById(this.getCanvasId(type));
+      if (canvas) {
+        const cachedData = this.getCachedData();
+        if (cachedData) {
+          const dataIndex = chartTypes.indexOf(type);
+          this.createChart(canvas, type, cachedData[dataIndex]);
+        } else {
+          this.createChart(canvas, type);
+        }
+      }
+    });
+  }
+
+  getChartType(canvas) {
+    const id = canvas.id;
+    if (id.includes('performance')) return 'performance';
+    if (id.includes('skills')) return 'skills';
+    if (id.includes('distribution')) return 'distribution';
+    if (id.includes('scoreRange')) return 'scoreRange';
+    return null;
+  }
+
+  async loadChartsWithCache() {
+    const cachedData = this.getCachedData();
+    if (cachedData) {
+      console.log('Using cached data');
+      this.createAllCharts(cachedData);
+      return;
+    }
+
+    console.log('Fetching fresh data');
+    const data = await this.fetchAllData();
+    this.cacheData(data);
+    this.createAllCharts(data);
+  }
+
+  getCachedData() {
+    try {
+      const cached = localStorage.getItem(this.cacheKey);
+      if (!cached) return null;
+      
+      const parsed = JSON.parse(cached);
+      if (Date.now() - parsed.timestamp > this.cacheExpiry) {
+        localStorage.removeItem(this.cacheKey);
+        return null;
+      }
+      
+      return parsed.data;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  cacheData(data) {
+    try {
+      localStorage.setItem(this.cacheKey, JSON.stringify({
+        data: data,
+        timestamp: Date.now()
+      }));
+    } catch (e) {
+      console.warn('Could not cache data:', e);
+    }
+  }
+
+  async fetchAllData() {
+    const fetchOptions = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+      },
+      credentials: 'same-origin'
+    };
+
+    const promises = [
+      fetch('/analytics/performance_data', fetchOptions).then(r => r.json()),
+      fetch('/analytics/skills_data', fetchOptions).then(r => r.json()),
+      fetch('/analytics/distribution_data', fetchOptions).then(r => r.json()),
+      fetch('/analytics/score_range_data', fetchOptions).then(r => r.json())
+    ];
+
+    const results = await Promise.allSettled(promises);
+    return results;
+  }
+
+  createAllCharts(data) {
+    const chartTypes = ['performance', 'skills', 'distribution', 'scoreRange'];
+    chartTypes.forEach((type, index) => {
+      const canvas = document.getElementById(this.getCanvasId(type));
+      if (canvas) {
+        this.createChart(canvas, type, data[index]);
+      }
+    });
+  }
+
+  getCanvasId(type) {
+    const mapping = {
+      'performance': 'performanceChart',
+      'skills': 'skillsChart',
+      'distribution': 'distributionChart',
+      'scoreRange': 'scoreRangeChart'
+    };
+    return mapping[type];
+  }
+
+  createChart(canvas, type, data = null) {
+    // Check if chart already exists and destroy it first
+    if (this.chartInstances.has(type)) {
+      console.log(`Chart ${type} already exists, destroying first`);
+      const existingChart = this.chartInstances.get(type);
+      if (existingChart && typeof existingChart.destroy === 'function') {
+        existingChart.destroy();
+      }
+    }
+    
+    if (this.charts.has(type)) {
+      console.log(`Chart ${type} already marked as created, skipping`);
+      return;
+    }
+    
+    this.hideLoadingIndicator(canvas);
+    
+    let chartInstance;
+    if (data && data.status === 'fulfilled') {
+      chartInstance = this.createChartWithData(canvas, type, data.value);
+    } else {
+      chartInstance = this.createChartWithTestData(canvas, type);
+    }
+    
+    // Store chart instance for proper cleanup
+    this.chartInstances.set(type, chartInstance);
+    this.charts.set(type, true);
+    console.log(`Chart ${type} created successfully`);
+  }
+
+  createChartWithData(canvas, type, data) {
+    const config = this.getChartConfig(type, data);
+    // Ensure canvas is properly sized within its container
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    const chart = new Chart(canvas, config);
+    console.log(`${type} chart created with real data`);
+    return chart;
+  }
+
+  createChartWithTestData(canvas, type) {
+    const config = this.getTestChartConfig(type);
+    // Ensure canvas is properly sized within its container
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    const chart = new Chart(canvas, config);
+    console.log(`${type} chart created with test data`);
+    return chart;
+  }
+
+  getChartConfig(type, data) {
+    const configs = {
+      performance: {
+        type: 'line',
+        data: {
+          labels: data.labels,
+          datasets: [{
+            label: 'Average Score',
+            data: data.average_scores,
+            borderColor: 'rgb(75, 192, 192)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            tension: 0.1,
+            fill: true
+          }, {
+            label: 'Top Score',
+            data: data.top_scores,
+            borderColor: 'rgb(255, 99, 132)',
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            tension: 0.1,
+            fill: true
+          }]
+        },
+        options: this.getOptimizedOptions('Performance Trends Over Time')
+      },
+      skills: {
+        type: 'radar',
+        data: {
+          labels: ['Reading', 'Writing', 'Listening', 'Speaking'],
+          datasets: [{
+            label: 'Average Skills',
+            data: data.average_skills,
+            borderColor: 'rgb(54, 162, 235)',
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            pointBackgroundColor: 'rgb(54, 162, 235)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgb(54, 162, 235)'
+          }]
+        },
+        options: this.getOptimizedOptions('Skills Distribution', { scales: { r: { beginAtZero: true, max: 10 } } })
+      },
+      distribution: {
+        type: 'doughnut',
+        data: {
+          labels: data.labels,
+          datasets: [{
+            data: data.values,
+            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+            hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
+          }]
+        },
+        options: this.getOptimizedOptions('Score Distribution', { plugins: { legend: { position: 'bottom' } } })
+      },
+      scoreRange: {
+        type: 'bar',
+        data: {
+          labels: data.labels,
+          datasets: [{
+            label: 'Number of Students',
+            data: data.values,
+            backgroundColor: ['rgba(255, 99, 132, 0.8)', 'rgba(54, 162, 235, 0.8)', 'rgba(255, 205, 86, 0.8)', 'rgba(75, 192, 192, 0.8)', 'rgba(153, 102, 255, 0.8)'],
+            borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 205, 86, 1)', 'rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)'],
+            borderWidth: 1
+          }]
+        },
+        options: this.getOptimizedOptions('Students by Score Range', { scales: { y: { beginAtZero: true } } })
+      }
+    };
+    return configs[type];
+  }
+
+  getTestChartConfig(type) {
+    const testData = {
+      performance: {
+        type: 'line',
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+          datasets: [{
+            label: 'Average Score',
+            data: [12, 19, 3, 5, 2, 3],
+            borderColor: 'rgb(75, 192, 192)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            tension: 0.1,
+            fill: true
+          }, {
+            label: 'Top Score',
+            data: [2, 3, 20, 5, 1, 4],
+            borderColor: 'rgb(255, 99, 132)',
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            tension: 0.1,
+            fill: true
+          }]
+        },
+        options: this.getOptimizedOptions('Performance Trends Over Time (Test Data)')
+      },
+      skills: {
+        type: 'radar',
+        data: {
+          labels: ['Reading', 'Writing', 'Listening', 'Speaking'],
+          datasets: [{
+            label: 'Average Skills',
+            data: [8, 7, 9, 6],
+            borderColor: 'rgb(54, 162, 235)',
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            pointBackgroundColor: 'rgb(54, 162, 235)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgb(54, 162, 235)'
+          }]
+        },
+        options: this.getOptimizedOptions('Skills Distribution (Test Data)', { scales: { r: { beginAtZero: true, max: 10 } } })
+      },
+      distribution: {
+        type: 'doughnut',
+        data: {
+          labels: ['Excellent (90%+)', 'Good (80-89%)', 'Average (70-79%)', 'Below Average (60-69%)', 'Needs Improvement (<60%)'],
+          datasets: [{
+            data: [5, 8, 12, 3, 2],
+            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+            hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
+          }]
+        },
+        options: this.getOptimizedOptions('Score Distribution (Test Data)', { plugins: { legend: { position: 'bottom' } } })
+      },
+      scoreRange: {
+        type: 'bar',
+        data: {
+          labels: ['0-10', '11-20', '21-30', '31-35', '36-40'],
+          datasets: [{
+            label: 'Number of Students',
+            data: [2, 5, 8, 10, 5],
+            backgroundColor: ['rgba(255, 99, 132, 0.8)', 'rgba(54, 162, 235, 0.8)', 'rgba(255, 205, 86, 0.8)', 'rgba(75, 192, 192, 0.8)', 'rgba(153, 102, 255, 0.8)'],
+            borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 205, 86, 1)', 'rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)'],
+            borderWidth: 1
+          }]
+        },
+        options: this.getOptimizedOptions('Students by Score Range (Test Data)', { scales: { y: { beginAtZero: true } } })
+      }
+    };
+    return testData[type];
+  }
+
+  getOptimizedOptions(title, additionalOptions = {}) {
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: {
+        duration: 800,
+        easing: 'easeInOutQuart'
+      },
+      interaction: {
+        intersect: false,
+        mode: 'index'
+      },
+      plugins: {
+        title: {
+          display: true,
+          text: title,
+          font: {
+            size: 14,
+            weight: 'bold'
+          }
+        },
+        legend: {
+          position: 'top',
+          labels: {
+            usePointStyle: true,
+            padding: 15
+          }
+        }
+      },
+      ...additionalOptions
+    };
+  }
+}
+
+// Initialize the optimizer - prevent multiple instances
+if (window.analyticsOptimizer) {
+  console.log('Destroying existing analytics optimizer');
+  window.analyticsOptimizer.cleanup();
+}
+window.analyticsOptimizer = new AnalyticsOptimizer();
+</script>

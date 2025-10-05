@@ -1,0 +1,70 @@
+<h2>Weekly Student Progress Report</h2>
+
+<div class="alert alert-success">
+  <strong>Weekly Summary:</strong> Here's your weekly overview of student progress and activity.
+</div>
+
+<div class="stats-grid">
+  <div class="stat-item">
+    <span class="stat-number"><%= @report_data[:total_students] %></span>
+    <span class="stat-label">Total Students</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-number"><%= @report_data[:new_notes] %></span>
+    <span class="stat-label">New Notes</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-number"><%= @report_data[:average_score] %></span>
+    <span class="stat-label">Avg Score</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-number"><%= @report_data[:top_performers] %></span>
+    <span class="stat-label">Top Performers</span>
+  </div>
+</div>
+
+<h3>This Week's Highlights</h3>
+
+<% if @report_data[:recent_students].any? %>
+  <h4>Recently Added Students:</h4>
+  <ul>
+    <% @report_data[:recent_students].each do |student| %>
+      <li><strong><%= student.name %></strong> - Score: <%= student.total_score %>/40</li>
+    <% end %>
+  </ul>
+<% end %>
+
+<% if @report_data[:recent_notes].any? %>
+  <h4>Recent Notes Added:</h4>
+  <ul>
+    <% @report_data[:recent_notes].each do |note| %>
+      <li><strong><%= note.student.name %></strong>: <%= truncate(note.content, length: 50) %></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<% if @report_data[:improvements].any? %>
+  <h4>Students Showing Improvement:</h4>
+  <ul>
+    <% @report_data[:improvements].each do |student| %>
+      <li><strong><%= student.name %></strong> - Score: <%= student.total_score %>/40</li>
+    <% end %>
+  </ul>
+<% end %>
+
+<div class="alert alert-warning">
+  <strong>Action Items:</strong>
+  <ul>
+    <li>Review students with scores below 70%</li>
+    <li>Add notes for students without recent updates</li>
+    <li>Schedule parent meetings if needed</li>
+  </ul>
+</div>
+
+<a href="<%= analytics_url %>" class="btn btn-primary">View Detailed Analytics</a>
+<a href="<%= students_url %>" class="btn btn-success">Manage Students</a>
+
+<p>Thank you for your continued dedication to student success!</p>
+
+<p>Best regards,<br>
+Student Records Management System</p>

@@ -1,0 +1,69 @@
+<h2>Welcome to Student Records Management System!</h2>
+
+<div class="alert alert-success">
+  <strong>Welcome <%= @user.first_name %>!</strong> Your account has been successfully created.
+</div>
+
+<p>We're excited to have you join our educational community. The Student Records Management System will help you track student progress, manage notes, and generate comprehensive reports.</p>
+
+<div class="student-card">
+  <h3>Your Account Details</h3>
+  <p><strong>Name:</strong> <%= @user.full_name %></p>
+  <p><strong>Email:</strong> <%= @user.email %></p>
+  <p><strong>Role:</strong> <%= @user.role.humanize %></p>
+  <p><strong>Account Created:</strong> <%= @user.created_at.strftime('%B %d, %Y') %></p>
+</div>
+
+<h3>Getting Started</h3>
+
+<% if @user.admin? %>
+  <div class="alert alert-info">
+    <strong>Admin Access:</strong> As an administrator, you have full access to all features including:
+    <ul>
+      <li>User management and role assignments</li>
+      <li>Student record management</li>
+      <li>Analytics and reporting</li>
+      <li>Data export and import</li>
+      <li>System configuration</li>
+    </ul>
+  </div>
+<% elsif @user.teacher? %>
+  <div class="alert alert-info">
+    <strong>Teacher Access:</strong> As a teacher, you can:
+    <ul>
+      <li>Add and manage students</li>
+      <li>Create and edit notes</li>
+      <li>View analytics and reports</li>
+      <li>Export student data</li>
+    </ul>
+  </div>
+<% else %>
+  <div class="alert alert-info">
+    <strong>Student Access:</strong> As a student, you can:
+    <ul>
+      <li>View your own records</li>
+      <li>See your progress and scores</li>
+      <li>Read notes from your teachers</li>
+    </ul>
+  </div>
+<% end %>
+
+<h3>Next Steps</h3>
+<ol>
+  <li>Log in to your account using your email and password</li>
+  <li>Explore the dashboard to familiarize yourself with the interface</li>
+  <% if @user.teacher? || @user.admin? %>
+    <li>Add your first student or import student data</li>
+    <li>Start creating notes and tracking progress</li>
+  <% end %>
+  <li>Set up your profile and preferences</li>
+</ol>
+
+<a href="<%= root_url %>" class="btn btn-primary">Access Your Dashboard</a>
+
+<p>If you have any questions or need assistance, please don't hesitate to contact your system administrator.</p>
+
+<p>Welcome aboard, and we look forward to helping you achieve educational excellence!</p>
+
+<p>Best regards,<br>
+Student Records Management System Team</p>

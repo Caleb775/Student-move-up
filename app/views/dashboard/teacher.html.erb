@@ -105,9 +105,23 @@
               <% end %>
             </div>
             <div class="col-md-4 mb-2">
-              <%= link_to "#", class: "btn btn-outline-info w-100" do %>
+              <%= link_to analytics_path, class: "btn btn-outline-info w-100" do %>
                 <i class="bi bi-graph-up me-2"></i>
-                View Reports
+                View Analytics
+              <% end %>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-2">
+              <%= link_to export_path, class: "btn btn-outline-success w-100" do %>
+                <i class="bi bi-download me-2"></i>
+                Export Data
+              <% end %>
+            </div>
+            <div class="col-md-6 mb-2">
+              <%= link_to import_path, class: "btn btn-outline-warning w-100" do %>
+                <i class="bi bi-upload me-2"></i>
+                Import Data
               <% end %>
             </div>
           </div>

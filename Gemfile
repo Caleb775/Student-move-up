@@ -28,6 +28,15 @@ gem "cancancan"
 gem "ransack"
 gem "kaminari"
 
+# Export/Import functionality
+gem "caxlsx_rails"      # Excel export (Rails compatible)
+gem "roo-xls"           # Excel import
+gem "csv"               # CSV handling (built-in but explicit)
+
+# Communication features
+gem "letter_opener"     # Email preview in development
+gem "sidekiq"           # Background job processing
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 

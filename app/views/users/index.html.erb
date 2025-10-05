@@ -1,0 +1,297 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="display-4 text-primary">
+      <i class="bi bi-people me-3"></i>
+      User Management
+    </h1>
+    <div class="d-flex gap-2">
+      <%= link_to new_user_path, class: "btn btn-primary" do %>
+        <i class="bi bi-person-plus me-2"></i>
+        Add New User
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Search and Filter -->
+  <div class="card shadow mb-4">
+    <div class="card-header bg-light">
+      <h6 class="mb-0">
+        <i class="bi bi-search me-2"></i>
+        Search & Filter Users
+      </h6>
+    </div>
+    <div class="card-body">
+      <%= search_form_for @q, url: users_path, method: :get, local: true, class: "row g-3" do |f| %>
+        <div class="col-md-4">
+          <%= f.label :first_name_or_last_name_cont, "Name", class: "form-label" %>
+          <%= f.search_field :first_name_or_last_name_cont, class: "form-control", placeholder: "Search by name..." %>
+        </div>
+        <div class="col-md-4">
+          <%= f.label :email_cont, "Email", class: "form-label" %>
+          <%= f.search_field :email_cont, class: "form-control", placeholder: "Search by email..." %>
+        </div>
+        <div class="col-md-3">
+          <%= f.label :role_eq, "Role", class: "form-label" %>
+          <%= f.select :role_eq, options_for_select([
+            ['All Roles', ''],
+            ['Student', 0],
+            ['Teacher', 1],
+            ['Admin', 2]
+          ], params.dig(:q, :role_eq)), {}, { class: "form-select" } %>
+        </div>
+        <div class="col-md-1 d-flex align-items-end">
+          <%= f.submit "Search", class: "btn btn-outline-primary w-100" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Bulk Actions -->
+  <%= form_with url: bulk_actions_users_path, method: :post, local: true, id: "bulk-form" do |form| %>
+    <!-- Users Table -->
+    <div class="card shadow">
+      <div class="card-header bg-light d-flex justify-content-between align-items-center">
+        <h6 class="mb-0">
+          <i class="bi bi-table me-2"></i>
+          Users (<%= @users.total_count %> total)
+        </h6>
+        <div class="d-flex gap-2">
+          <button type="button" class="btn btn-sm btn-outline-secondary" onclick="selectAll()">
+            <i class="bi bi-check-all me-1"></i>
+            Select All
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" onclick="selectNone()">
+            <i class="bi bi-x me-1"></i>
+            Select None
+          </button>
+        </div>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th width="50">
+                  <input type="checkbox" id="select-all" class="form-check-input" onchange="toggleAll()">
+                </th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Students</th>
+                <th>Notes</th>
+                <th>Last Login</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @users.each do |user| %>
+                <tr>
+                  <td>
+                    <input type="checkbox" name="user_ids[]" value="<%= user.id %>" class="form-check-input user-checkbox">
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="avatar-circle me-2">
+                        <%= user.first_name.first.upcase %><%= user.last_name.first.upcase %>
+                      </div>
+                      <div>
+                        <strong><%= user.full_name %></strong>
+                        <% if user == current_user %>
+                          <span class="badge bg-primary ms-1">You</span>
+                        <% end %>
+                      </div>
+                    </div>
+                  </td>
+                  <td><%= user.email %></td>
+                  <td>
+                    <span class="badge <%= role_badge_class(user.role) %>">
+                      <%= user.role_name %>
+                    </span>
+                  </td>
+                  <td>
+                    <span class="badge bg-info"><%= user.students.count %></span>
+                  </td>
+                  <td>
+                    <span class="badge bg-secondary"><%= user.notes.count %></span>
+                  </td>
+                  <td>
+                    <% if user.last_sign_in_at %>
+                      <%= time_ago_in_words(user.last_sign_in_at) %> ago
+                    <% else %>
+                      <span class="text-muted">Never</span>
+                    <% end %>
+                  </td>
+                  <td>
+                    <div class="btn-group btn-group-sm">
+                      <%= link_to user_path(user), class: "btn btn-outline-primary" do %>
+                        <i class="bi bi-eye"></i>
+                      <% end %>
+                      <%= link_to edit_user_path(user), class: "btn btn-outline-secondary" do %>
+                        <i class="bi bi-pencil"></i>
+                      <% end %>
+                      <% unless user == current_user %>
+                        <%= link_to user_path(user), method: :delete, 
+                            data: { confirm: "Are you sure you want to delete #{user.full_name}?" },
+                            class: "btn btn-outline-danger" do %>
+                          <i class="bi bi-trash"></i>
+                        <% end %>
+                      <% end %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bulk Actions Panel -->
+    <div class="card shadow mt-3" id="bulk-actions-panel" style="display: none;">
+      <div class="card-header bg-warning text-dark">
+        <h6 class="mb-0">
+          <i class="bi bi-gear me-2"></i>
+          Bulk Actions
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col-md-4">
+            <span id="selected-count">0</span> user(s) selected
+          </div>
+          <div class="col-md-3">
+            <%= form.select :bulk_action, [
+              ['Select Action...', ''],
+              ['Delete Selected', 'delete'],
+              ['Change Role', 'change_role']
+            ], {}, { class: "form-select", id: "bulk-action-select" } %>
+          </div>
+          <div class="col-md-3" id="role-select-container" style="display: none;">
+            <%= form.select :new_role, [
+              ['Select Role...', ''],
+              ['Student', 0],
+              ['Teacher', 1],
+              ['Admin', 2]
+            ], {}, { class: "form-select" } %>
+          </div>
+          <div class="col-md-2">
+            <%= form.submit "Apply", class: "btn btn-warning w-100", id: "bulk-submit" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Pagination -->
+  <div class="d-flex justify-content-center mt-4">
+    <%= paginate @users, theme: 'twitter-bootstrap-4' %>
+  </div>
+</div>
+
+<style>
+.avatar-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+}
+</style>
+
+<script>
+function toggleAll() {
+  const selectAll = document.getElementById('select-all');
+  const checkboxes = document.querySelectorAll('.user-checkbox');
+  
+  checkboxes.forEach(checkbox => {
+    checkbox.checked = selectAll.checked;
+  });
+  
+  updateBulkActions();
+}
+
+function selectAll() {
+  document.getElementById('select-all').checked = true;
+  toggleAll();
+}
+
+function selectNone() {
+  document.getElementById('select-all').checked = false;
+  toggleAll();
+}
+
+function updateBulkActions() {
+  const checkboxes = document.querySelectorAll('.user-checkbox:checked');
+  const selectedCount = checkboxes.length;
+  const bulkPanel = document.getElementById('bulk-actions-panel');
+  const countSpan = document.getElementById('selected-count');
+  const roleContainer = document.getElementById('role-select-container');
+  const bulkActionSelect = document.getElementById('bulk-action-select');
+  
+  countSpan.textContent = selectedCount;
+  
+  if (selectedCount > 0) {
+    bulkPanel.style.display = 'block';
+  } else {
+    bulkPanel.style.display = 'none';
+  }
+  
+  // Show/hide role selector based on bulk action
+  if (bulkActionSelect.value === 'change_role') {
+    roleContainer.style.display = 'block';
+  } else {
+    roleContainer.style.display = 'none';
+  }
+}
+
+// Add event listeners
+document.addEventListener('DOMContentLoaded', function() {
+  const checkboxes = document.querySelectorAll('.user-checkbox');
+  const bulkActionSelect = document.getElementById('bulk-action-select');
+  
+  checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', updateBulkActions);
+  });
+  
+  bulkActionSelect.addEventListener('change', updateBulkActions);
+  
+  // Handle bulk form submission
+  document.getElementById('bulk-form').addEventListener('submit', function(e) {
+    const selectedCount = document.querySelectorAll('.user-checkbox:checked').length;
+    const action = bulkActionSelect.value;
+    
+    if (selectedCount === 0) {
+      e.preventDefault();
+      alert('Please select at least one user.');
+      return;
+    }
+    
+    if (action === '') {
+      e.preventDefault();
+      alert('Please select an action.');
+      return;
+    }
+    
+    if (action === 'change_role') {
+      const newRole = document.querySelector('select[name="new_role"]').value;
+      if (newRole === '') {
+        e.preventDefault();
+        alert('Please select a new role.');
+        return;
+      }
+    }
+    
+    if (action === 'delete') {
+      if (!confirm(`Are you sure you want to delete ${selectedCount} user(s)?`)) {
+        e.preventDefault();
+        return;
+      }
+    }
+  });
+});
+</script>

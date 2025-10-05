@@ -39,3 +39,43 @@ plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"]
 # Specify the PID file. Defaults to tmp/pids/server.pid in development.
 # In other environments, only set the PID file if requested.
 pidfile ENV["PIDFILE"] if ENV["PIDFILE"]
+
+# Production-specific configuration
+if ENV["RAILS_ENV"] == "production"
+  # Number of worker processes
+  workers ENV.fetch("WEB_CONCURRENCY", 2).to_i
+
+  # Preload the app for better performance
+  preload_app!
+
+  # Worker timeout
+  worker_timeout 30
+
+  # Worker boot timeout
+  worker_boot_timeout 10
+
+  # Worker shutdown timeout
+  worker_shutdown_timeout 8
+
+  # Bind to all interfaces
+  bind "tcp://0.0.0.0:#{ENV.fetch('PORT', 3000)}"
+
+  # Logging
+  stdout_redirect "log/puma.stdout.log", "log/puma.stderr.log", true
+
+  # Worker management
+  on_worker_boot do
+    # Worker specific setup
+    ActiveRecord::Base.establish_connection if defined?(ActiveRecord)
+  end
+
+  on_worker_shutdown do
+    # Worker specific cleanup
+    ActiveRecord::Base.connection_pool.disconnect! if defined?(ActiveRecord)
+  end
+
+  # Master process setup
+  before_fork do
+    ActiveRecord::Base.connection_pool.disconnect! if defined?(ActiveRecord)
+  end
+end

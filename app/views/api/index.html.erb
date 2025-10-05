@@ -1,0 +1,197 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="display-4 text-primary">
+      <i class="bi bi-code-slash me-3"></i>
+      API Documentation
+    </h1>
+    <div class="text-muted">
+      <i class="bi bi-calendar3 me-1"></i>
+      <%= Date.current.strftime("%B %d, %Y") %>
+    </div>
+  </div>
+
+  <!-- Authentication Section -->
+  <div class="card shadow mb-4">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">
+        <i class="bi bi-shield-lock me-2"></i>
+        Authentication
+      </h5>
+    </div>
+    <div class="card-body">
+      <p>All API requests require authentication using a Bearer token in the Authorization header.</p>
+      <div class="alert alert-info">
+        <strong>Your API Token:</strong>
+        <code class="ms-2"><%= @current_user_token %></code>
+        <button class="btn btn-sm btn-outline-primary ms-2" onclick="copyToken()">
+          <i class="bi bi-clipboard"></i> Copy
+        </button>
+      </div>
+      <h6>Example Request:</h6>
+      <pre class="bg-light p-3 rounded"><code>curl -H "Authorization: Bearer <%= @current_user_token %>" \
+     -H "Content-Type: application/json" \
+     https://your-domain.com/api/v1/students</code></pre>
+    </div>
+  </div>
+
+  <!-- Students API -->
+  <div class="card shadow mb-4">
+    <div class="card-header bg-success text-white">
+      <h5 class="mb-0">
+        <i class="bi bi-people me-2"></i>
+        Students API
+      </h5>
+    </div>
+    <div class="card-body">
+      <% @api_endpoints[:students].each do |action, details| %>
+        <div class="mb-4">
+          <div class="d-flex align-items-center mb-2">
+            <span class="badge bg-<%= action == :index ? 'primary' : action == :show ? 'info' : action == :create ? 'success' : action == :update ? 'warning' : action == :destroy ? 'danger' : 'secondary' %> me-2">
+              <%= details[:method] %>
+            </span>
+            <code class="me-2"><%= details[:url] %></code>
+            <strong><%= action.to_s.humanize %></strong>
+          </div>
+          <p class="text-muted"><%= details[:description] %></p>
+          
+          <% if details[:parameters] %>
+            <h6>Parameters:</h6>
+            <ul>
+              <% details[:parameters].each do |param, desc| %>
+                <li><code><%= param %></code>: <%= desc %></li>
+              <% end %>
+            </ul>
+          <% end %>
+          
+          <% if details[:example_request] %>
+            <h6>Example Request:</h6>
+            <pre class="bg-light p-3 rounded"><code><%= JSON.pretty_generate(details[:example_request]) %></code></pre>
+          <% end %>
+          
+          <% if details[:example_response] %>
+            <h6>Example Response:</h6>
+            <pre class="bg-light p-3 rounded"><code><%= JSON.pretty_generate(details[:example_response]) %></code></pre>
+          <% end %>
+          
+          <hr>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Notes API -->
+  <div class="card shadow mb-4">
+    <div class="card-header bg-info text-white">
+      <h5 class="mb-0">
+        <i class="bi bi-sticky me-2"></i>
+        Notes API
+      </h5>
+    </div>
+    <div class="card-body">
+      <% @api_endpoints[:notes].each do |action, details| %>
+        <div class="mb-4">
+          <div class="d-flex align-items-center mb-2">
+            <span class="badge bg-<%= action == :index ? 'primary' : action == :show ? 'info' : action == :create ? 'success' : action == :update ? 'warning' : action == :destroy ? 'danger' : 'secondary' %> me-2">
+              <%= details[:method] %>
+            </span>
+            <code class="me-2"><%= details[:url] %></code>
+            <strong><%= action.to_s.humanize %></strong>
+          </div>
+          <p class="text-muted"><%= details[:description] %></p>
+          
+          <% if details[:parameters] %>
+            <h6>Parameters:</h6>
+            <ul>
+              <% details[:parameters].each do |param, desc| %>
+                <li><code><%= param %></code>: <%= desc %></li>
+              <% end %>
+            </ul>
+          <% end %>
+          
+          <hr>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Response Codes -->
+  <div class="card shadow mb-4">
+    <div class="card-header bg-warning text-dark">
+      <h5 class="mb-0">
+        <i class="bi bi-list-check me-2"></i>
+        HTTP Response Codes
+      </h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h6>Success Codes:</h6>
+          <ul class="list-unstyled">
+            <li><span class="badge bg-success me-2">200</span> OK - Request successful</li>
+            <li><span class="badge bg-success me-2">201</span> Created - Resource created successfully</li>
+          </ul>
+        </div>
+        <div class="col-md-6">
+          <h6>Error Codes:</h6>
+          <ul class="list-unstyled">
+            <li><span class="badge bg-danger me-2">401</span> Unauthorized - Invalid or missing token</li>
+            <li><span class="badge bg-danger me-2">404</span> Not Found - Resource not found</li>
+            <li><span class="badge bg-danger me-2">422</span> Unprocessable Entity - Validation errors</li>
+            <li><span class="badge bg-danger me-2">500</span> Internal Server Error - Server error</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rate Limiting -->
+  <div class="card shadow">
+    <div class="card-header bg-secondary text-white">
+      <h5 class="mb-0">
+        <i class="bi bi-speedometer2 me-2"></i>
+        Rate Limiting & Best Practices
+      </h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h6>Rate Limits:</h6>
+          <ul>
+            <li>1000 requests per hour per API token</li>
+            <li>Burst limit: 100 requests per minute</li>
+            <li>Rate limit headers included in responses</li>
+          </ul>
+        </div>
+        <div class="col-md-6">
+          <h6>Best Practices:</h6>
+          <ul>
+            <li>Use pagination for large datasets</li>
+            <li>Cache responses when appropriate</li>
+            <li>Handle errors gracefully</li>
+            <li>Use HTTPS for all requests</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function copyToken() {
+  const token = '<%= @current_user_token %>';
+  navigator.clipboard.writeText(token).then(function() {
+    // Show success message
+    const button = event.target.closest('button');
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="bi bi-check"></i> Copied!';
+    button.classList.remove('btn-outline-primary');
+    button.classList.add('btn-success');
+    
+    setTimeout(function() {
+      button.innerHTML = originalText;
+      button.classList.remove('btn-success');
+      button.classList.add('btn-outline-primary');
+    }, 2000);
+  });
+}
+</script>

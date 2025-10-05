@@ -1,0 +1,253 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex align-items-center">
+      <div class="avatar-circle me-3">
+        <%= @user.first_name.first.upcase %><%= @user.last_name.first.upcase %>
+      </div>
+      <div>
+        <h1 class="display-5 text-primary mb-0">
+          <%= @user.full_name %>
+          <% if @user == current_user %>
+            <span class="badge bg-primary ms-2">You</span>
+          <% end %>
+        </h1>
+        <p class="text-muted mb-0">
+          <span class="badge <%= role_badge_class(@user.role) %> me-2">
+            <%= @user.role_name %>
+          </span>
+          <%= @user.email %>
+        </p>
+      </div>
+    </div>
+    <div class="d-flex gap-2">
+      <%= link_to edit_user_path(@user), class: "btn btn-outline-primary" do %>
+        <i class="bi bi-pencil me-2"></i>
+        Edit User
+      <% end %>
+      <%= link_to users_path, class: "btn btn-outline-secondary" do %>
+        <i class="bi bi-arrow-left me-2"></i>
+        Back to Users
+      <% end %>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- User Information -->
+    <div class="col-md-4">
+      <div class="card shadow">
+        <div class="card-header bg-light">
+          <h6 class="mb-0">
+            <i class="bi bi-info-circle me-2"></i>
+            User Information
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <strong>First Name:</strong><br>
+            <%= @user.first_name %>
+          </div>
+          <div class="mb-3">
+            <strong>Last Name:</strong><br>
+            <%= @user.last_name %>
+          </div>
+          <div class="mb-3">
+            <strong>Email:</strong><br>
+            <%= @user.email %>
+          </div>
+          <div class="mb-3">
+            <strong>Role:</strong><br>
+            <span class="badge <%= role_badge_class(@user.role) %>">
+              <%= @user.role_name %>
+            </span>
+          </div>
+          <div class="mb-3">
+            <strong>Account Created:</strong><br>
+            <%= @user.created_at.strftime('%B %d, %Y') %>
+          </div>
+          <div class="mb-0">
+            <strong>Last Sign In:</strong><br>
+            <% if @user.last_sign_in_at %>
+              <%= @user.last_sign_in_at.strftime('%B %d, %Y at %I:%M %p') %>
+            <% else %>
+              <span class="text-muted">Never</span>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="card shadow mt-3">
+        <div class="card-header bg-light">
+          <h6 class="mb-0">
+            <i class="bi bi-graph-up me-2"></i>
+            Quick Stats
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="row text-center">
+            <div class="col-6">
+              <h4 class="text-primary"><%= @user.students.count %></h4>
+              <small class="text-muted">Students</small>
+            </div>
+            <div class="col-6">
+              <h4 class="text-info"><%= @user.notes.count %></h4>
+              <small class="text-muted">Notes</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Students Section -->
+    <div class="col-md-8">
+      <div class="card shadow">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+          <h6 class="mb-0">
+            <i class="bi bi-people me-2"></i>
+            Assigned Students (<%= @user_students.count %>)
+          </h6>
+          <% if @user.teacher? || @user.admin? %>
+            <%= link_to new_student_path, class: "btn btn-sm btn-primary" do %>
+              <i class="bi bi-person-plus me-1"></i>
+              Add Student
+            <% end %>
+          <% end %>
+        </div>
+        <div class="card-body">
+          <% if @user_students.any? %>
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead class="table-light">
+                  <tr>
+                    <th>Name</th>
+                    <th>Reading</th>
+                    <th>Writing</th>
+                    <th>Listening</th>
+                    <th>Speaking</th>
+                    <th>Total Score</th>
+                    <th>Percentage</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @user_students.each do |student| %>
+                    <tr>
+                      <td>
+                        <strong><%= link_to student.name, student_path(student), class: "text-decoration-none" %></strong>
+                      </td>
+                      <td>
+                        <span class="badge bg-primary"><%= student.reading %></span>
+                      </td>
+                      <td>
+                        <span class="badge bg-success"><%= student.writing %></span>
+                      </td>
+                      <td>
+                        <span class="badge bg-info"><%= student.listening %></span>
+                      </td>
+                      <td>
+                        <span class="badge bg-warning"><%= student.speaking %></span>
+                      </td>
+                      <td>
+                        <strong><%= student.total_score %>/40</strong>
+                      </td>
+                      <td>
+                        <span class="badge <%= percentage_badge_class(student.percentage) %>">
+                          <%= student.percentage.round(1) %>%
+                        </span>
+                      </td>
+                      <td>
+                        <div class="btn-group btn-group-sm">
+                          <%= link_to student_path(student), class: "btn btn-outline-primary" do %>
+                            <i class="bi bi-eye"></i>
+                          <% end %>
+                          <% if can? :edit, student %>
+                            <%= link_to edit_student_path(student), class: "btn btn-outline-secondary" do %>
+                              <i class="bi bi-pencil"></i>
+                            <% end %>
+                          <% end %>
+                        </div>
+                      </td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          <% else %>
+            <div class="text-center py-4">
+              <i class="bi bi-people display-1 text-muted"></i>
+              <h5 class="text-muted mt-3">No students assigned</h5>
+              <p class="text-muted">This user doesn't have any students assigned yet.</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Recent Notes -->
+      <div class="card shadow mt-3">
+        <div class="card-header bg-light">
+          <h6 class="mb-0">
+            <i class="bi bi-sticky me-2"></i>
+            Recent Notes (<%= @user.notes.count %> total)
+          </h6>
+        </div>
+        <div class="card-body">
+          <% if @user_notes.any? %>
+            <div class="list-group list-group-flush">
+              <% @user_notes.each do |note| %>
+                <div class="list-group-item border-0 px-0">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                      <h6 class="mb-1">
+                        <%= link_to note.student.name, student_path(note.student), class: "text-decoration-none" %>
+                      </h6>
+                      <p class="mb-1"><%= truncate(note.content, length: 100) %></p>
+                      <small class="text-muted">
+                        <%= time_ago_in_words(note.created_at) %> ago
+                      </small>
+                    </div>
+                    <div class="btn-group btn-group-sm">
+                      <%= link_to student_note_path(note.student, note), class: "btn btn-outline-primary" do %>
+                        <i class="bi bi-eye"></i>
+                      <% end %>
+                      <% if can? :edit, note %>
+                        <%= link_to edit_student_note_path(note.student, note), class: "btn btn-outline-secondary" do %>
+                          <i class="bi bi-pencil"></i>
+                        <% end %>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+            <% if @user.notes.count > 10 %>
+              <div class="text-center mt-3">
+                <%= link_to "View all students", students_path, class: "btn btn-outline-primary" %>
+              </div>
+            <% end %>
+          <% else %>
+            <div class="text-center py-4">
+              <i class="bi bi-sticky display-1 text-muted"></i>
+              <h5 class="text-muted mt-3">No notes created</h5>
+              <p class="text-muted">This user hasn't created any notes yet.</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.avatar-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 24px;
+}
+</style>

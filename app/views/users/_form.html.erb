@@ -1,0 +1,153 @@
+<%= form_with(model: user, local: true, class: "needs-validation", novalidate: true) do |form| %>
+  <% if user.errors.any? %>
+    <div class="alert alert-danger">
+      <h6><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h6>
+      <ul class="mb-0">
+        <% user.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="mb-3">
+        <%= form.label :first_name, class: "form-label fw-bold" %>
+        <%= form.text_field :first_name, class: "form-control", required: true %>
+        <div class="invalid-feedback">
+          Please provide a valid first name.
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="mb-3">
+        <%= form.label :last_name, class: "form-label fw-bold" %>
+        <%= form.text_field :last_name, class: "form-control", required: true %>
+        <div class="invalid-feedback">
+          Please provide a valid last name.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :email, class: "form-label fw-bold" %>
+    <%= form.email_field :email, class: "form-control", required: true %>
+    <div class="invalid-feedback">
+      Please provide a valid email address.
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :role, class: "form-label fw-bold" %>
+    <%= form.select :role, options_for_select([
+      ['Student', 0],
+      ['Teacher', 1],
+      ['Admin', 2]
+    ], user.role), {}, { class: "form-select", required: true } %>
+    <div class="form-text">
+      <strong>Student:</strong> Can view their own records<br>
+      <strong>Teacher:</strong> Can manage students and create notes<br>
+      <strong>Admin:</strong> Full access to all features
+    </div>
+  </div>
+
+  <% if user.new_record? %>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="mb-3">
+          <%= form.label :password, class: "form-label fw-bold" %>
+          <%= form.password_field :password, class: "form-control", required: true, minlength: 6 %>
+          <div class="form-text">Minimum 6 characters</div>
+          <div class="invalid-feedback">
+            Password must be at least 6 characters long.
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="mb-3">
+          <%= form.label :password_confirmation, "Confirm Password", class: "form-label fw-bold" %>
+          <%= form.password_field :password_confirmation, class: "form-control", required: true %>
+          <div class="invalid-feedback">
+            Please confirm your password.
+          </div>
+        </div>
+      </div>
+    </div>
+  <% else %>
+    <div class="alert alert-info">
+      <i class="bi bi-info-circle me-2"></i>
+      <strong>Password Update:</strong> Leave password fields blank to keep current password.
+    </div>
+    
+    <div class="row">
+      <div class="col-md-6">
+        <div class="mb-3">
+          <%= form.label :password, "New Password", class: "form-label fw-bold" %>
+          <%= form.password_field :password, class: "form-control", minlength: 6 %>
+          <div class="form-text">Leave blank to keep current password</div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="mb-3">
+          <%= form.label :password_confirmation, "Confirm New Password", class: "form-label fw-bold" %>
+          <%= form.password_field :password_confirmation, class: "form-control" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="d-flex justify-content-between">
+    <div>
+      <%= link_to users_path, class: "btn btn-outline-secondary" do %>
+        <i class="bi bi-arrow-left me-2"></i>
+        Back to Users
+      <% end %>
+    </div>
+    <div>
+      <%= form.submit class: "btn btn-primary" do %>
+        <i class="bi bi-check me-2"></i>
+        <%= user.new_record? ? 'Create User' : 'Update User' %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<script>
+// Bootstrap form validation
+(function() {
+  'use strict';
+  window.addEventListener('load', function() {
+    var forms = document.getElementsByClassName('needs-validation');
+    var validation = Array.prototype.filter.call(forms, function(form) {
+      form.addEventListener('submit', function(event) {
+        if (form.checkValidity() === false) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  }, false);
+})();
+
+// Password confirmation validation
+document.addEventListener('DOMContentLoaded', function() {
+  const password = document.querySelector('input[name="user[password]"]');
+  const passwordConfirmation = document.querySelector('input[name="user[password_confirmation]"]');
+  
+  if (password && passwordConfirmation) {
+    function validatePassword() {
+      if (password.value !== passwordConfirmation.value) {
+        passwordConfirmation.setCustomValidity('Passwords do not match');
+      } else {
+        passwordConfirmation.setCustomValidity('');
+      }
+    }
+    
+    password.addEventListener('change', validatePassword);
+    passwordConfirmation.addEventListener('keyup', validatePassword);
+  }
+});
+</script>

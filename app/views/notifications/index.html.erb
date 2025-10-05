@@ -1,0 +1,131 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="display-4 text-primary">
+      <i class="bi bi-bell me-3"></i>
+      Notifications
+    </h1>
+    <div class="d-flex gap-2">
+      <% if @unread_count > 0 %>
+        <%= link_to mark_all_as_read_notifications_path, method: :patch, class: "btn btn-outline-primary" do %>
+          <i class="bi bi-check-all me-2"></i>
+          Mark All Read
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <% if @notifications.any? %>
+    <div class="card shadow">
+      <div class="card-header bg-light d-flex justify-content-between align-items-center">
+        <h6 class="mb-0">
+          <i class="bi bi-list me-2"></i>
+          Your Notifications (<%= @unread_count %> unread)
+        </h6>
+      </div>
+      <div class="card-body p-0">
+        <div class="list-group list-group-flush">
+          <% @notifications.each do |notification| %>
+            <div class="list-group-item <%= 'bg-light' if notification.read? %>">
+              <div class="d-flex justify-content-between align-items-start">
+                <div class="flex-grow-1">
+                  <div class="d-flex align-items-center mb-2">
+                    <div class="notification-icon me-3">
+                      <%= notification_icon(notification.notification_type) %>
+                    </div>
+                    <div>
+                      <h6 class="mb-1 <%= 'fw-bold' unless notification.read? %>">
+                        <%= notification.title %>
+                        <% unless notification.read? %>
+                          <span class="badge bg-primary ms-2">New</span>
+                        <% end %>
+                      </h6>
+                      <p class="mb-1 text-muted">
+                        <%= time_ago_in_words(notification.created_at) %> ago
+                      </p>
+                    </div>
+                  </div>
+                  <p class="mb-2"><%= notification.message %></p>
+                </div>
+                <div class="btn-group btn-group-sm">
+                  <% unless notification.read? %>
+                    <%= link_to mark_as_read_notification_path(notification), method: :patch, 
+                        class: "btn btn-outline-primary", title: "Mark as read" do %>
+                      <i class="bi bi-check"></i>
+                    <% end %>
+                  <% end %>
+                  <%= link_to notification_path(notification), class: "btn btn-outline-secondary", title: "View details" do %>
+                    <i class="bi bi-eye"></i>
+                  <% end %>
+                  <%= link_to notification_path(notification), method: :delete, 
+                      data: { confirm: "Are you sure you want to delete this notification?" },
+                      class: "btn btn-outline-danger", title: "Delete" do %>
+                    <i class="bi bi-trash"></i>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="d-flex justify-content-center mt-4">
+      <%= paginate @notifications, theme: 'twitter-bootstrap-4' %>
+    </div>
+  <% else %>
+    <div class="card shadow">
+      <div class="card-body text-center py-5">
+        <i class="bi bi-bell display-1 text-muted"></i>
+        <h3 class="text-muted mt-3">No Notifications</h3>
+        <p class="text-muted">You're all caught up! No notifications at the moment.</p>
+        <%= link_to root_path, class: "btn btn-primary" do %>
+          <i class="bi bi-house me-2"></i>
+          Go to Dashboard
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<style>
+.notification-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.notification-icon.student-created {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.notification-icon.student-updated {
+  background-color: #cce5ff;
+  color: #004085;
+}
+
+.notification-icon.note-added {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.notification-icon.weekly-report {
+  background-color: #e2e3e5;
+  color: #383d41;
+}
+
+.notification-icon.welcome {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.notification-icon.system-announcement {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+</style>

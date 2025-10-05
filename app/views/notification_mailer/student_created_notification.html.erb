@@ -1,0 +1,40 @@
+<h2>New Student Added</h2>
+
+<div class="alert alert-success">
+  <strong>Great news!</strong> A new student has been added to your class.
+</div>
+
+<div class="student-card">
+  <h3><%= @student.name %></h3>
+  <div class="stats-grid">
+    <div class="stat-item">
+      <span class="stat-number"><%= @student.reading %></span>
+      <span class="stat-label">Reading</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number"><%= @student.writing %></span>
+      <span class="stat-label">Writing</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number"><%= @student.listening %></span>
+      <span class="stat-label">Listening</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number"><%= @student.speaking %></span>
+      <span class="stat-label">Speaking</span>
+    </div>
+  </div>
+  
+  <p><strong>Total Score:</strong> <%= @student.total_score %>/40</p>
+  <p><strong>Percentage:</strong> <%= @student.percentage.round(1) %>%</p>
+  <p><strong>Added on:</strong> <%= @student.created_at.strftime('%B %d, %Y at %I:%M %p') %></p>
+</div>
+
+<p>You can now start adding notes and tracking this student's progress. Click the button below to view their profile.</p>
+
+<a href="<%= student_url(@student) %>" class="btn btn-success">View Student Profile</a>
+
+<p>If you have any questions about this student or need assistance, please don't hesitate to contact the system administrator.</p>
+
+<p>Best regards,<br>
+Student Records Management System</p>

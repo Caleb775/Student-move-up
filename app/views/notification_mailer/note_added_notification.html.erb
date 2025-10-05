@@ -1,0 +1,25 @@
+<h2>New Note Added</h2>
+
+<div class="alert alert-info">
+  <strong>Update:</strong> A new note has been added for one of your students.
+</div>
+
+<div class="student-card">
+  <h3><%= @student.name %></h3>
+  <p><strong>Note Content:</strong></p>
+  <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 4px solid #007bff; margin: 10px 0;">
+    <%= simple_format(@note.content) %>
+  </div>
+  
+  <p><strong>Added by:</strong> <%= @note.user.full_name %></p>
+  <p><strong>Date:</strong> <%= @note.created_at.strftime('%B %d, %Y at %I:%M %p') %></p>
+</div>
+
+<p>This note has been added to the student's record and is now part of their permanent file. You can view all notes and add additional comments by clicking the button below.</p>
+
+<a href="<%= student_url(@student) %>" class="btn btn-primary">View Student Profile</a>
+
+<p>Keep up the great work tracking student progress!</p>
+
+<p>Best regards,<br>
+Student Records Management System</p>
