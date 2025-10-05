@@ -98,7 +98,14 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:first_name, :last_name, :email, :role, :password, :password_confirmation)
+    if current_user&.admin?
+      # Admin users can set roles
+      # Brakeman: role parameter is protected by admin authorization
+      params.require(:user).permit(:first_name, :last_name, :email, :role, :password, :password_confirmation)
+    else
+      # Regular users cannot set roles
+      params.require(:user).permit(:first_name, :last_name, :email, :password, :password_confirmation)
+    end
   end
 
   def bulk_delete

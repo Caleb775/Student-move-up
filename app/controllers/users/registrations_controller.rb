@@ -40,12 +40,19 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # If you have extra params to permit, append them to the sanitizer.
   def configure_sign_up_params
-    devise_parameter_sanitizer.permit(:sign_up, keys: [ :first_name, :last_name, :role ])
+    if current_user&.admin?
+      # Admin users can set roles during sign up
+      devise_parameter_sanitizer.permit(:sign_up, keys: [ :first_name, :last_name, :role ])
+    else
+      # Regular users cannot set roles
+      devise_parameter_sanitizer.permit(:sign_up, keys: [ :first_name, :last_name ])
+    end
   end
 
   # If you have extra params to permit, append them to the sanitizer.
   def configure_account_update_params
-    devise_parameter_sanitizer.permit(:account_update, keys: [ :first_name, :last_name, :role ])
+    # Never allow role changes through account updates for security
+    devise_parameter_sanitizer.permit(:account_update, keys: [ :first_name, :last_name ])
   end
 
   # The path used after sign up.

@@ -14,8 +14,16 @@ class ApplicationController < ActionController::Base
   protected
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [ :first_name, :last_name, :role ])
-    devise_parameter_sanitizer.permit(:account_update, keys: [ :first_name, :last_name, :role ])
+    if current_user&.admin? && action_name == "create"
+      # Admin users can set roles during sign up
+      devise_parameter_sanitizer.permit(:sign_up, keys: [ :first_name, :last_name, :role ])
+    else
+      # Regular users cannot set roles
+      devise_parameter_sanitizer.permit(:sign_up, keys: [ :first_name, :last_name ])
+    end
+
+    # Account updates never allow role changes for security
+    devise_parameter_sanitizer.permit(:account_update, keys: [ :first_name, :last_name ])
   end
 
   private
