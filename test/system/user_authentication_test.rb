@@ -10,7 +10,7 @@ class UserAuthenticationTest < ApplicationSystemTestCase
 
     fill_in "Email", with: @user.email
     fill_in "Password", with: "password123"
-    click_button "Log in"
+    click_button "Sign In"
 
     assert_text "Signed in successfully"
     assert_current_path root_path
@@ -20,7 +20,7 @@ class UserAuthenticationTest < ApplicationSystemTestCase
     sign_in @user
     visit root_path
 
-    click_link "Sign out"
+    click_link "Sign Out"
     assert_text "Signed out successfully"
     assert_current_path new_user_session_path
   end

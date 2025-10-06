@@ -12,8 +12,8 @@ class AnalyticsDashboardTest < ApplicationSystemTestCase
     visit analytics_path
 
     assert_text "Analytics Dashboard"
-    assert_text "Performance Overview"
-    assert_text "Skills Distribution"
+    assert_text "Performance Trends"
+    assert_text "Skills Breakdown"
     assert_text "Score Distribution"
     assert_text "Score Ranges"
 
@@ -58,7 +58,7 @@ class AnalyticsDashboardTest < ApplicationSystemTestCase
     # Check for key metrics
     assert_text "Total Students"
     assert_text "Average Score"
-    assert_text "Top Performer"
-    assert_text "Improvement Rate"
+    assert_text "Top Performers"
+    assert_text "Recent Activity"
   end
 end

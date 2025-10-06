@@ -2,6 +2,9 @@ class Api::V1::BaseController < ApplicationController
   # Skip CSRF protection for API
   skip_before_action :verify_authenticity_token
 
+  # Skip regular authentication for API (we use token-based auth)
+  skip_before_action :authenticate_user!
+
   # Use token-based authentication
   before_action :authenticate_api_user!
 

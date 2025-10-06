@@ -44,6 +44,8 @@ class NoteTest < ActiveSupport::TestCase
   end
 
   test "should send notification after creation" do
+    # Create a note with a different user than the student's assigned teacher
+    @note.user = users(:admin)  # admin is different from teacher (student's assigned user)
     assert_difference "Notification.count" do
       @note.save
     end

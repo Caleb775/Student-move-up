@@ -54,19 +54,17 @@ class ExportController < ApplicationController
   def students_xlsx
     @students = Student.includes(:user, :notes)
 
-    respond_to do |format|
-      format.xlsx do
-        response.headers["Content-Type"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        response.headers["Content-Disposition"] = "attachment; filename=students.xlsx"
+    response.headers["Content-Type"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    response.headers["Content-Disposition"] = "attachment; filename=students.xlsx"
 
-        package = Axlsx::Package.new
-        workbook = package.workbook
+    package = Axlsx::Package.new
+    workbook = package.workbook
 
-        # Add styles
-        styles = workbook.styles
-        header_style = styles.add_style(bg_color: "366092", fg_color: "FFFFFF", b: true)
-        data_style = styles.add_style(border: Axlsx::STYLE_THIN_BORDER)
-        metric_style = styles.add_style(bg_color: "E6F3FF", b: true)
+    # Add styles
+    styles = workbook.styles
+    header_style = styles.add_style(bg_color: "366092", fg_color: "FFFFFF", b: true)
+    data_style = styles.add_style(border: Axlsx::STYLE_THIN_BORDER)
+    metric_style = styles.add_style(bg_color: "E6F3FF", b: true)
 
     # Students sheet
     workbook.add_worksheet(name: "Students") do |sheet|
@@ -107,9 +105,7 @@ class ExportController < ApplicationController
       sheet.column_widths(20, 15)
     end
 
-        send_data package.to_stream.read, filename: "students.xlsx"
-      end
-    end
+    send_data package.to_stream.read, filename: "students.xlsx"
   end
 
   def notes_csv
@@ -141,18 +137,16 @@ class ExportController < ApplicationController
   def notes_xlsx
     @notes = Note.includes(:student, :user)
 
-    respond_to do |format|
-      format.xlsx do
-        response.headers["Content-Type"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        response.headers["Content-Disposition"] = "attachment; filename=notes.xlsx"
+    response.headers["Content-Type"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    response.headers["Content-Disposition"] = "attachment; filename=notes.xlsx"
 
-        package = Axlsx::Package.new
-        workbook = package.workbook
+    package = Axlsx::Package.new
+    workbook = package.workbook
 
-        # Add styles
-        styles = workbook.styles
-        header_style = styles.add_style(bg_color: "366092", fg_color: "FFFFFF", b: true)
-        data_style = styles.add_style(border: Axlsx::STYLE_THIN_BORDER)
+    # Add styles
+    styles = workbook.styles
+    header_style = styles.add_style(bg_color: "366092", fg_color: "FFFFFF", b: true)
+    data_style = styles.add_style(border: Axlsx::STYLE_THIN_BORDER)
 
     # Notes sheet
     workbook.add_worksheet(name: "Notes") do |sheet|
@@ -175,9 +169,7 @@ class ExportController < ApplicationController
       sheet.column_widths(8, 20, 50, 20, 18, 18)
     end
 
-        send_data package.to_stream.read, filename: "notes.xlsx"
-      end
-    end
+    send_data package.to_stream.read, filename: "notes.xlsx"
   end
 
   def analytics_report
@@ -185,19 +177,17 @@ class ExportController < ApplicationController
     @notes = Note.all
     @users = User.all
 
-    respond_to do |format|
-      format.xlsx do
-        response.headers["Content-Type"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        response.headers["Content-Disposition"] = "attachment; filename=analytics_report.xlsx"
+    response.headers["Content-Type"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    response.headers["Content-Disposition"] = "attachment; filename=analytics_report.xlsx"
 
-        package = Axlsx::Package.new
-        workbook = package.workbook
+    package = Axlsx::Package.new
+    workbook = package.workbook
 
-        # Add styles
-        styles = workbook.styles
-        header_style = styles.add_style(bg_color: "366092", fg_color: "FFFFFF", b: true)
-        data_style = styles.add_style(border: Axlsx::STYLE_THIN_BORDER)
-        metric_style = styles.add_style(bg_color: "E6F3FF", b: true)
+    # Add styles
+    styles = workbook.styles
+    header_style = styles.add_style(bg_color: "366092", fg_color: "FFFFFF", b: true)
+    data_style = styles.add_style(border: Axlsx::STYLE_THIN_BORDER)
+    metric_style = styles.add_style(bg_color: "E6F3FF", b: true)
 
     # Analytics Summary Sheet
     workbook.add_worksheet(name: "Analytics Summary") do |sheet|
@@ -268,9 +258,7 @@ class ExportController < ApplicationController
       sheet.column_widths(20, 12, 15, 20)
     end
 
-        send_data package.to_stream.read, filename: "analytics_report.xlsx"
-      end
-    end
+    send_data package.to_stream.read, filename: "analytics_report.xlsx"
   end
 
   private

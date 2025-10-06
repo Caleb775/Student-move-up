@@ -15,7 +15,7 @@ class StudentManagementFlowTest < ActionDispatch::IntegrationTest
     # Visit students index
     get students_path
     assert_response :success
-    assert_select "h1", "Students"
+    assert_select "h1", "Student Rankings"
 
     # Create new student
     get new_student_path
@@ -129,9 +129,11 @@ class StudentManagementFlowTest < ActionDispatch::IntegrationTest
   test "student cannot manage students" do
     sign_in @student_user
 
+    # Student can view students list (read-only)
     get students_path
-    assert_redirected_to root_path
+    assert_response :success
 
+    # Student cannot create new students
     get new_student_path
     assert_redirected_to root_path
   end

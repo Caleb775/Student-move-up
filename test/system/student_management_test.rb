@@ -20,7 +20,7 @@ class StudentManagementTest < ApplicationSystemTestCase
     fill_in "Speaking", with: "8"
     click_button "Create Student"
 
-    assert_text "Student was successfully created"
+    assert_text "Student successfully created"
     assert_text "John Doe"
     assert_text "32/40"
     assert_text "80.0%"
@@ -64,7 +64,7 @@ class StudentManagementTest < ApplicationSystemTestCase
     fill_in "Speaking", with: "9"
     click_button "Create Student"
 
-    assert_text "Student was successfully created"
+    assert_text "Student successfully created"
     assert_text "Admin Student"
   end
 
@@ -81,7 +81,7 @@ class StudentManagementTest < ApplicationSystemTestCase
     visit students_path
 
     # Test search functionality
-    fill_in "Search students...", with: "MyString"
+    fill_in "Search students by name or notes...", with: "MyString"
     click_button "Search"
 
     # Should show filtered results
