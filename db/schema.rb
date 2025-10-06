@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_30_214140) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_05_000002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -23,6 +23,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_30_214140) do
     t.index ["content"], name: "index_notes_on_content"
     t.index ["student_id"], name: "index_notes_on_student_id"
     t.index ["user_id"], name: "index_notes_on_user_id"
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "title", null: false
+    t.text "message", null: false
+    t.string "notification_type", null: false
+    t.boolean "read", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["notification_type"], name: "index_notifications_on_notification_type"
+    t.index ["read"], name: "index_notifications_on_read"
+    t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
   create_table "students", force: :cascade do |t|
@@ -63,6 +76,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_30_214140) do
     t.string "last_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "api_token"
+    t.index ["api_token"], name: "index_users_on_api_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["role"], name: "index_users_on_role"
@@ -70,5 +85,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_30_214140) do
 
   add_foreign_key "notes", "students"
   add_foreign_key "notes", "users"
+  add_foreign_key "notifications", "users"
   add_foreign_key "students", "users"
 end

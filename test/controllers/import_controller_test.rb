@@ -53,13 +53,13 @@ class ImportControllerTest < ActionDispatch::IntegrationTest
     sign_in @admin_user
     get import_template_url(type: "invalid", format: "csv")
     assert_response :redirect
-    assert_redirected_to import_index_path
+    assert_redirected_to import_path
   end
 
   test "should handle invalid template format" do
     sign_in @admin_user
     get import_template_url(type: "students", format: "invalid")
     assert_response :redirect
-    assert_redirected_to import_index_path
+    assert_redirected_to import_path
   end
 end

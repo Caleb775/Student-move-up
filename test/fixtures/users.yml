@@ -2,21 +2,21 @@
 
 admin:
   email: admin@example.com
-  encrypted_password: <%= User.new.send(:password_digest, 'password123') %>
+  encrypted_password: <%= BCrypt::Password.create('password123') %>
   first_name: Admin
   last_name: User
   role: 2
 
 teacher:
   email: teacher@example.com
-  encrypted_password: <%= User.new.send(:password_digest, 'password123') %>
+  encrypted_password: <%= BCrypt::Password.create('password123') %>
   first_name: Teacher
   last_name: User
   role: 1
 
 student:
   email: student@example.com
-  encrypted_password: <%= User.new.send(:password_digest, 'password123') %>
+  encrypted_password: <%= BCrypt::Password.create('password123') %>
   first_name: Student
   last_name: User
   role: 0

@@ -24,10 +24,10 @@ class ImportController < ApplicationController
       when "xlsx"
         download_students_xlsx_template
       else
-        render json: { error: "Invalid format specified." }, status: :not_acceptable
+        redirect_to import_path, alert: "Invalid format specified."
       end
     else
-      render json: { error: "Invalid import type specified." }, status: :not_acceptable
+      redirect_to import_path, alert: "Invalid import type specified."
     end
   end
 
@@ -61,67 +61,59 @@ class ImportController < ApplicationController
   end
 
   def download_students_csv_template
-    respond_to do |format|
-      format.csv do
-        response.headers["Content-Type"] = "text/csv"
-        response.headers["Content-Disposition"] = "attachment; filename=students_import_template.csv"
+    response.headers["Content-Type"] = "text/csv"
+    response.headers["Content-Disposition"] = "attachment; filename=students_import_template.csv"
 
-        csv_data = CSV.generate(headers: true) do |csv|
-          # Headers
-          csv << [ "Name", "Reading", "Writing", "Listening", "Speaking", "Teacher Email" ]
+    csv_data = CSV.generate(headers: true) do |csv|
+      # Headers
+      csv << [ "Name", "Reading", "Writing", "Listening", "Speaking", "Teacher Email" ]
 
-          # Sample data
-          csv << [ "John Doe", 8, 7, 9, 6, "teacher@example.com" ]
-          csv << [ "Jane Smith", 9, 8, 7, 8, "teacher@example.com" ]
-          csv << [ "Bob Johnson", 7, 9, 8, 7, "teacher@example.com" ]
-        end
-
-        render plain: csv_data
-      end
+      # Sample data
+      csv << [ "John Doe", 8, 7, 9, 6, "teacher@example.com" ]
+      csv << [ "Jane Smith", 9, 8, 7, 8, "teacher@example.com" ]
+      csv << [ "Bob Johnson", 7, 9, 8, 7, "teacher@example.com" ]
     end
+
+    render plain: csv_data
   end
 
   def download_students_xlsx_template
-    respond_to do |format|
-      format.xlsx do
-        response.headers["Content-Type"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        response.headers["Content-Disposition"] = "attachment; filename=students_import_template.xlsx"
+    response.headers["Content-Type"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    response.headers["Content-Disposition"] = "attachment; filename=students_import_template.xlsx"
 
-        package = Axlsx::Package.new
-        workbook = package.workbook
+    package = Axlsx::Package.new
+    workbook = package.workbook
 
-        # Add styles
-        styles = workbook.styles
-        header_style = styles.add_style(bg_color: "366092", fg_color: "FFFFFF", b: true)
-        data_style = styles.add_style(border: Axlsx::STYLE_THIN_BORDER)
-        instruction_style = styles.add_style(bg_color: "FFF2CC", b: true)
+    # Add styles
+    styles = workbook.styles
+    header_style = styles.add_style(bg_color: "366092", fg_color: "FFFFFF", b: true)
+    data_style = styles.add_style(border: Axlsx::STYLE_THIN_BORDER)
+    instruction_style = styles.add_style(bg_color: "FFF2CC", b: true)
 
-        # Template sheet
-        workbook.add_worksheet(name: "Students Template") do |sheet|
-          # Instructions
-          sheet.add_row([ "IMPORT INSTRUCTIONS" ], style: instruction_style)
-          sheet.add_row([ "1. Fill in the data below the headers" ], style: data_style)
-          sheet.add_row([ "2. Name: Student full name (required)" ], style: data_style)
-          sheet.add_row([ "3. Reading, Writing, Listening, Speaking: Scores 0-10 (required)" ], style: data_style)
-          sheet.add_row([ "4. Teacher Email: Email of assigned teacher (optional)" ], style: data_style)
-          sheet.add_row([ "5. Save as CSV or Excel and upload" ], style: data_style)
-          sheet.add_row([]) # Empty row
+    # Template sheet
+    workbook.add_worksheet(name: "Students Template") do |sheet|
+      # Instructions
+      sheet.add_row([ "IMPORT INSTRUCTIONS" ], style: instruction_style)
+      sheet.add_row([ "1. Fill in the data below the headers" ], style: data_style)
+      sheet.add_row([ "2. Name: Student full name (required)" ], style: data_style)
+      sheet.add_row([ "3. Reading, Writing, Listening, Speaking: Scores 0-10 (required)" ], style: data_style)
+      sheet.add_row([ "4. Teacher Email: Email of assigned teacher (optional)" ], style: data_style)
+      sheet.add_row([ "5. Save as CSV or Excel and upload" ], style: data_style)
+      sheet.add_row([]) # Empty row
 
-          # Headers
-          sheet.add_row([ "Name", "Reading", "Writing", "Listening", "Speaking", "Teacher Email" ], style: header_style)
+      # Headers
+      sheet.add_row([ "Name", "Reading", "Writing", "Listening", "Speaking", "Teacher Email" ], style: header_style)
 
-          # Sample data
-          sheet.add_row([ "John Doe", 8, 7, 9, 6, "teacher@example.com" ], style: data_style)
-          sheet.add_row([ "Jane Smith", 9, 8, 7, 8, "teacher@example.com" ], style: data_style)
-          sheet.add_row([ "Bob Johnson", 7, 9, 8, 7, "teacher@example.com" ], style: data_style)
+      # Sample data
+      sheet.add_row([ "John Doe", 8, 7, 9, 6, "teacher@example.com" ], style: data_style)
+      sheet.add_row([ "Jane Smith", 9, 8, 7, 8, "teacher@example.com" ], style: data_style)
+      sheet.add_row([ "Bob Johnson", 7, 9, 8, 7, "teacher@example.com" ], style: data_style)
 
-          # Auto-size columns
-          sheet.column_widths(20, 10, 10, 10, 10, 25)
-        end
-
-        send_data package.to_stream.read, filename: "students_import_template.xlsx"
-      end
+      # Auto-size columns
+      sheet.column_widths(20, 10, 10, 10, 10, 25)
     end
+
+    send_data package.to_stream.read, filename: "students_import_template.xlsx"
   end
 
   def import_students

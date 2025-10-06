@@ -5,7 +5,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   # Add role-based access control
-  enum role: { student: 0, teacher: 1, admin: 2 }
+  # enum role: { student: 0, teacher: 1, admin: 2 }
 
   # Associations
   has_many :students, dependent: :destroy
@@ -15,7 +15,7 @@ class User < ApplicationRecord
   # Validations
   validates :first_name, presence: true
   validates :last_name, presence: true
-  validates :role, presence: true
+  validates :role, presence: true, inclusion: { in: [ 0, 1, 2 ] }
 
   # Generate API token before creation
   before_create :generate_api_token

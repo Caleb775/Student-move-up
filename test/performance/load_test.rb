@@ -1,7 +1,7 @@
 require "test_helper"
 require "benchmark"
 
-class LoadTest < ActiveSupport::TestCase
+class LoadTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
 
   setup do
