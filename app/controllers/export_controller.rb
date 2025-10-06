@@ -25,7 +25,7 @@ class ExportController < ApplicationController
     respond_to do |format|
       format.csv do
         response.headers["Content-Type"] = "text/csv"
-        response.headers["Content-Disposition"] = "attachment; filename=students_#{Date.current.strftime('%Y%m%d')}.csv"
+        response.headers["Content-Disposition"] = "attachment; filename=students.csv"
 
         csv_data = CSV.generate(headers: true) do |csv|
           # Headers
@@ -121,7 +121,7 @@ class ExportController < ApplicationController
     respond_to do |format|
       format.csv do
         response.headers["Content-Type"] = "text/csv"
-        response.headers["Content-Disposition"] = "attachment; filename=notes_#{Date.current.strftime('%Y%m%d')}.csv"
+        response.headers["Content-Disposition"] = "attachment; filename=notes.csv"
 
         csv_data = CSV.generate(headers: true) do |csv|
           # Headers

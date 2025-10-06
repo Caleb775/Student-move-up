@@ -24,10 +24,10 @@ class ImportController < ApplicationController
       when "xlsx"
         download_students_xlsx_template
       else
-        redirect_to import_index_path, alert: "Invalid format specified."
+        render json: { error: "Invalid format specified." }, status: :not_acceptable
       end
     else
-      redirect_to import_index_path, alert: "Invalid import type specified."
+      render json: { error: "Invalid import type specified." }, status: :not_acceptable
     end
   end
 

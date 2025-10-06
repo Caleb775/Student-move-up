@@ -5,7 +5,7 @@ class Student < ApplicationRecord
   validates :name, presence: true
   validates :reading, :writing, :listening, :speaking,
             presence: true,
-            numericality: { in: 0..10 }
+            numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 10 }
 
   # Calculate scores automatically
   before_save :calculate_scores

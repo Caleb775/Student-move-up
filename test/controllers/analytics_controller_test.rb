@@ -32,28 +32,28 @@ class AnalyticsControllerTest < ActionDispatch::IntegrationTest
     sign_in @admin_user
     get analytics_performance_data_url
     assert_response :success
-    assert_equal "application/json", response.content_type
+    assert_equal "application/json; charset=utf-8", response.content_type
   end
 
   test "should get skills data for admin" do
     sign_in @admin_user
     get analytics_skills_data_url
     assert_response :success
-    assert_equal "application/json", response.content_type
+    assert_equal "application/json; charset=utf-8", response.content_type
   end
 
   test "should get distribution data for admin" do
     sign_in @admin_user
     get analytics_distribution_data_url
     assert_response :success
-    assert_equal "application/json", response.content_type
+    assert_equal "application/json; charset=utf-8", response.content_type
   end
 
   test "should get score range data for admin" do
     sign_in @admin_user
     get analytics_score_range_data_url
     assert_response :success
-    assert_equal "application/json", response.content_type
+    assert_equal "application/json; charset=utf-8", response.content_type
   end
 
   test "should require authentication for analytics" do

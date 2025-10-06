@@ -13,7 +13,7 @@ class LoadTest < ActiveSupport::TestCase
     sign_in @teacher
 
     time = Benchmark.realtime do
-      get students_path
+      get "/students"
     end
 
     assert_response :success
@@ -24,7 +24,7 @@ class LoadTest < ActiveSupport::TestCase
     sign_in @admin
 
     time = Benchmark.realtime do
-      get analytics_path
+      get "/analytics"
     end
 
     assert_response :success
@@ -35,7 +35,7 @@ class LoadTest < ActiveSupport::TestCase
     sign_in @admin
 
     time = Benchmark.realtime do
-      get users_path
+      get "/users"
     end
 
     assert_response :success
@@ -65,7 +65,7 @@ class LoadTest < ActiveSupport::TestCase
     sign_in @admin
 
     time = Benchmark.realtime do
-      get export_students_csv_path
+      get "/export/students.csv"
     end
 
     assert_response :success
@@ -80,7 +80,7 @@ class LoadTest < ActiveSupport::TestCase
     callback = lambda { |*| query_count += 1 }
 
     ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
-      get students_path
+      get "/students"
     end
 
     assert_response :success
