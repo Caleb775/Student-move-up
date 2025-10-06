@@ -1,5 +1,6 @@
 class StudentsController < ApplicationController
   load_and_authorize_resource
+  before_action :set_user_for_student, only: [ :create ]
 
   # GET /students
   def index
@@ -52,6 +53,10 @@ class StudentsController < ApplicationController
   end
 
   private
+
+  def set_user_for_student
+    @student.user = current_user
+  end
 
   def student_params
     params.require(:student).permit(:name, :reading, :writing, :listening, :speaking, :user_id)

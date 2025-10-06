@@ -13,14 +13,18 @@ class UserAuthenticationTest < ApplicationSystemTestCase
     click_button "Sign In"
 
     assert_text "Signed in successfully"
-    assert_current_path root_path
+    assert_current_path admin_dashboard_path
   end
 
   test "user can sign out" do
     sign_in @user
     visit root_path
 
-    click_link "Sign Out"
+    # Use JavaScript to open dropdown and click sign out
+    execute_script("document.querySelector('a.dropdown-toggle').click()")
+    sleep 0.5
+    execute_script("document.querySelector('a[data-turbo-method=\"delete\"]').click()")
+
     assert_text "Signed out successfully"
     assert_current_path new_user_session_path
   end

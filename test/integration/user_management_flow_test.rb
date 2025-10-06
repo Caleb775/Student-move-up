@@ -117,10 +117,10 @@ class UserManagementFlowTest < ActionDispatch::IntegrationTest
     # Test bulk delete
     assert_difference "User.count", -2 do
       post bulk_actions_users_path, params: {
-        action: "delete",
+        bulk_action: "delete",
         user_ids: [ user1.id, user2.id ]
       }
     end
-    assert_response :success
+    assert_response :redirect
   end
 end

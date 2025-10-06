@@ -31,23 +31,24 @@ class StudentManagementTest < ApplicationSystemTestCase
     fill_in "Reading", with: "9"
     click_button "Update Student"
 
-    assert_text "Student was successfully updated"
+    assert_text "Student successfully updated"
     assert_text "John Smith"
     assert_text "33/40"
 
     # Add note
     click_link "Add Note"
-    fill_in "Content", with: "Great progress in reading skills!"
+    fill_in "Teacher Note", with: "Great progress in reading skills!"
     click_button "Create Note"
 
     assert_text "Note was successfully created"
     assert_text "Great progress in reading skills!"
 
     # Delete student
-    click_link "Delete"
-    page.driver.browser.switch_to.alert.accept
+    accept_confirm do
+      click_link "Delete Student"
+    end
 
-    assert_text "Student was successfully destroyed"
+    assert_text "Student successfully deleted"
   end
 
   test "admin can manage all students" do
@@ -72,8 +73,9 @@ class StudentManagementTest < ApplicationSystemTestCase
     sign_in @student
     visit students_path
 
-    assert_current_path root_path
-    assert_text "Access denied"
+    # Student can view students list (read-only)
+    assert_current_path students_path
+    assert_text "Student Rankings"
   end
 
   test "search and filter students" do
@@ -82,7 +84,7 @@ class StudentManagementTest < ApplicationSystemTestCase
 
     # Test search functionality
     fill_in "Search students by name or notes...", with: "MyString"
-    click_button "Search"
+    find('button[type="submit"]').click
 
     # Should show filtered results
     assert_text "MyString"

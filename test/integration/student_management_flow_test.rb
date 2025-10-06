@@ -39,7 +39,7 @@ class StudentManagementFlowTest < ActionDispatch::IntegrationTest
     # View the new student
     get student_path(new_student)
     assert_response :success
-    assert_select "h1", "New Student"
+    assert_select "h2", "Student Details: New Student"
 
     # Edit the student
     get edit_student_path(new_student)

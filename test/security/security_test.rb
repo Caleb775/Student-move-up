@@ -94,9 +94,13 @@ class SecurityTest < ActionDispatch::IntegrationTest
       }
     }
 
-    student = Student.last
-    # Should escape HTML
-    assert_not_includes student.name, "<script>"
+    # Follow redirect to student show page
+    follow_redirect!
+
+    # Check that the script tag is escaped in the rendered HTML
+    assert_not_includes response.body, "<script>alert('xss')</script>"
+    # The script tag should be HTML escaped (with HTML entity encoding for quotes)
+    assert_includes response.body, "&lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt;"
   end
 
   test "prevents CSRF attacks" do
@@ -130,13 +134,10 @@ class SecurityTest < ActionDispatch::IntegrationTest
   end
 
   test "API token is properly validated" do
-    sign_in @admin
+    # Ensure admin has an API token
+    @admin.regenerate_api_token! if @admin.api_token.blank?
 
-    # Get valid token
-    get "/api"
-    assert_response :success
-
-    # Use valid token
+    # Use valid token (don't sign in for API requests)
     token = @admin.api_token
     get "/api/v1/students", headers: { "Authorization" => "Bearer #{token}" }
     assert_response :success
@@ -161,10 +162,11 @@ class SecurityTest < ActionDispatch::IntegrationTest
 
     post import_upload_path, params: {
       file: malicious_file,
-      type: "students"
+      import_type: "students"
     }
 
-    # Should handle file validation properly
-    assert_response :success
+    # Should reject unsupported file format
+    assert_response :redirect
+    assert_redirected_to import_index_path
   end
 end

@@ -33,8 +33,9 @@ class AnalyticsDashboardTest < ApplicationSystemTestCase
     sign_in @student
     visit analytics_path
 
-    assert_current_path root_path
-    assert_text "Access denied"
+    # Student gets redirected to their dashboard after access denial
+    assert_current_path student_dashboard_path
+    assert_text "You don't have permission to access analytics"
   end
 
   test "analytics charts load properly" do

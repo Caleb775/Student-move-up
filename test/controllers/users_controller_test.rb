@@ -99,9 +99,10 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   test "should handle bulk actions for admin" do
     sign_in @admin_user
     post bulk_actions_users_url, params: {
-      action: "delete",
+      bulk_action: "delete",
       user_ids: [ @user.id ]
     }
-    assert_response :success
+    assert_response :redirect
+    assert_redirected_to users_path
   end
 end

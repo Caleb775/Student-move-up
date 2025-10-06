@@ -8,8 +8,8 @@ class Api::V1::BaseController < ApplicationController
   # Use token-based authentication
   before_action :authenticate_api_user!
 
-  # Set response format to JSON
-  respond_to :json
+  # Override error handling to avoid respond_to conflicts
+  rescue_from StandardError, with: :handle_api_error
 
   private
 
@@ -43,5 +43,16 @@ class Api::V1::BaseController < ApplicationController
       message: message,
       data: data
     }
+  end
+
+  def handle_api_error(exception)
+    # Log the error for debugging
+    Rails.logger.error "API error: #{exception.message}"
+    Rails.logger.error exception.backtrace.join("\n")
+
+    # Return JSON error response only if not already rendered
+    unless response.body.present?
+      render json: { error: "Internal server error" }, status: :internal_server_error
+    end
   end
 end
