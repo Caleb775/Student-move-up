@@ -27,14 +27,14 @@ Rails.application.routes.draw do
   # Export routes
   get "export", to: "export#index", as: :export
   get "export/students.csv", to: "export#students_csv", as: :export_students_csv
-  get "export/students.xlsx", to: "export#students_xlsx", as: :export_students_xlsx, defaults: { format: :xlsx }
-  get "export/notes.csv", to: "export#notes_csv", as: :export_notes_csv, defaults: { format: :csv }
-  get "export/notes.xlsx", to: "export#notes_xlsx", as: :export_notes_xlsx, defaults: { format: :xlsx }
-  get "export/analytics.xlsx", to: "export#analytics_report", as: :export_analytics_xlsx, defaults: { format: :xlsx }
+  get "export/students.xlsx", to: "export#students_xlsx", as: :export_students_xlsx, format: :xlsx
+  get "export/notes.csv", to: "export#notes_csv", as: :export_notes_csv, format: :csv
+  get "export/notes.xlsx", to: "export#notes_xlsx", as: :export_notes_xlsx, format: :xlsx
+  get "export/analytics.xlsx", to: "export#analytics_report", as: :export_analytics_xlsx, format: :xlsx
 
   # Import routes
   get "import", to: "import#index", as: :import
-  get "import/template/:type/:format", to: "import#download_template", as: :import_template, defaults: { format: :xlsx }
+  get "import/template/:type", to: "import#download_template", as: :import_template
   post "import/upload", to: "import#upload", as: :import_upload
 
   # User management routes

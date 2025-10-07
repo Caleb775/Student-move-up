@@ -38,7 +38,7 @@ class ExportControllerTest < ActionDispatch::IntegrationTest
 
   test "should export students xlsx for admin" do
     sign_in @admin_user
-    get export_students_xlsx_url
+    get "/export/students.xlsx"
     assert_response :success
     assert_equal "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", response.content_type
     assert_includes response.headers["Content-Disposition"], "students.xlsx"
@@ -54,7 +54,7 @@ class ExportControllerTest < ActionDispatch::IntegrationTest
 
   test "should export notes xlsx for admin" do
     sign_in @admin_user
-    get export_notes_xlsx_url
+    get "/export/notes.xlsx"
     assert_response :success
     assert_equal "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", response.content_type
     assert_includes response.headers["Content-Disposition"], "notes.xlsx"
@@ -62,7 +62,7 @@ class ExportControllerTest < ActionDispatch::IntegrationTest
 
   test "should export analytics report for admin" do
     sign_in @admin_user
-    get export_analytics_xlsx_url
+    get "/export/analytics.xlsx"
     assert_response :success
     assert_equal "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", response.content_type
     assert_includes response.headers["Content-Disposition"], "analytics_report.xlsx"

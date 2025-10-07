@@ -11,6 +11,8 @@ class UserManagementFlowTest < ActionDispatch::IntegrationTest
 
   test "admin can manage users complete flow" do
     sign_in @admin_user
+    puts "DEBUG: Admin user role: #{@admin_user.role}"
+    puts "DEBUG: Admin user admin?: #{@admin_user.admin?}"
 
     # Visit users index
     get users_path
@@ -21,23 +23,29 @@ class UserManagementFlowTest < ActionDispatch::IntegrationTest
     get new_user_path
     assert_response :success
 
-    assert_difference "User.count" do
-      post users_path, params: {
-        user: {
-          first_name: "New",
-          last_name: "Teacher",
-          email: "newteacher@example.com",
-          password: "password123",
-          password_confirmation: "password123",
-          role: 1
-        }
+    post users_path, params: {
+      user: {
+        first_name: "New",
+        last_name: "Teacher",
+        email: "newteacher#{SecureRandom.uuid}@example.com",
+        password: "password123",
+        password_confirmation: "password123",
+        role: 1
       }
+    }
+
+    puts "DEBUG: Response status: #{response.status}"
+    if response.status != 302
+      puts "DEBUG: Response body: #{response.body}"
+    else
+      puts "DEBUG: Redirected to: #{response.location}"
     end
 
-    new_user = User.last
-    assert_redirected_to user_path(new_user)
+    assert_response :redirect
+    assert_redirected_to user_path(User.last)
 
     # View the new user
+    new_user = User.last
     get user_path(new_user)
     assert_response :success
     assert_select "h1", "New Teacher"

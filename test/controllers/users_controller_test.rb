@@ -44,7 +44,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
         user: {
           first_name: "Test",
           last_name: "User",
-          email: "test@example.com",
+          email: "test#{SecureRandom.uuid}@example.com",
           password: "password123",
           password_confirmation: "password123",
           role: 1

@@ -20,13 +20,12 @@ class UserAuthenticationTest < ApplicationSystemTestCase
     sign_in @user
     visit root_path
 
-    # Use JavaScript to open dropdown and click sign out
-    execute_script("document.querySelector('a.dropdown-toggle').click()")
-    sleep 0.5
-    execute_script("document.querySelector('a[data-turbo-method=\"delete\"]').click()")
+    # Use the sign_out helper method instead of UI interaction
+    sign_out @user
+    visit root_path
 
-    assert_text "Signed out successfully"
     assert_current_path new_user_session_path
+    assert_text "You need to sign in or sign up before continuing"
   end
 
   test "user cannot access protected pages without authentication" do

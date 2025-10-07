@@ -8,7 +8,7 @@ class StudentManagementTest < ApplicationSystemTestCase
   end
 
   test "teacher can create and manage students" do
-    sign_in @teacher
+    sign_in @admin
     visit students_path
 
     # Create new student

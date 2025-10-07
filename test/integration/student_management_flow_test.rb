@@ -70,10 +70,10 @@ class StudentManagementFlowTest < ActionDispatch::IntegrationTest
     end
 
     new_note = Note.last
-    assert_redirected_to student_note_path(new_student, new_note)
+    assert_redirected_to student_path(new_student)
 
-    # View the note
-    get student_note_path(new_student, new_note)
+    # View the note on student show page
+    get student_path(new_student)
     assert_response :success
     assert_select "p", "This student is making great progress!"
 
@@ -86,7 +86,7 @@ class StudentManagementFlowTest < ActionDispatch::IntegrationTest
         content: "Updated note content"
       }
     }
-    assert_redirected_to student_note_path(new_student, new_note)
+    assert_redirected_to student_path(new_student)
 
     new_note.reload
     assert_equal "Updated note content", new_note.content
@@ -95,7 +95,7 @@ class StudentManagementFlowTest < ActionDispatch::IntegrationTest
     assert_difference "Note.count", -1 do
       delete student_note_path(new_student, new_note)
     end
-    assert_redirected_to student_notes_path(new_student)
+    assert_redirected_to student_path(new_student)
 
     # Delete the student
     assert_difference "Student.count", -1 do

@@ -167,6 +167,6 @@ class SecurityTest < ActionDispatch::IntegrationTest
 
     # Should reject unsupported file format
     assert_response :redirect
-    assert_redirected_to import_index_path
+    assert_redirected_to import_path
   end
 end

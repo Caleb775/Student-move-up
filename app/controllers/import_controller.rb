@@ -3,6 +3,9 @@ class ImportController < ApplicationController
   before_action :check_import_access
   skip_authorization_check
 
+  # Ensure Axlsx is available
+  require "axlsx" if defined?(Axlsx)
+
   def index
     @import_templates = {
       students: {
@@ -16,17 +19,23 @@ class ImportController < ApplicationController
     type = params[:type] # 'students'
     format = params[:format] # 'csv' or 'xlsx'
 
+    Rails.logger.debug "DEBUG: download_template called with type=#{type}, format=#{format}"
+
     case type
     when "students"
       case format
       when "csv"
+        Rails.logger.debug "DEBUG: Calling download_students_csv_template"
         download_students_csv_template
       when "xlsx"
+        Rails.logger.debug "DEBUG: Calling download_students_xlsx_template"
         download_students_xlsx_template
       else
+        Rails.logger.debug "DEBUG: Invalid format specified: #{format}"
         redirect_to import_path, alert: "Invalid format specified."
       end
     else
+      Rails.logger.debug "DEBUG: Invalid type specified: #{type}"
       redirect_to import_path, alert: "Invalid import type specified."
     end
   end
@@ -36,7 +45,7 @@ class ImportController < ApplicationController
     @import_type = params[:import_type]
 
     if @file.blank?
-      redirect_to import_index_path, alert: "Please select a file to import."
+      redirect_to import_path, alert: "Please select a file to import."
       return
     end
 
@@ -45,10 +54,10 @@ class ImportController < ApplicationController
       when "students"
         import_students
       else
-        redirect_to import_index_path, alert: "Invalid import type specified."
+        redirect_to import_path, alert: "Invalid import type specified."
       end
     rescue => e
-      redirect_to import_index_path, alert: "Import failed: #{e.message}"
+      redirect_to import_path, alert: "Import failed: #{e.message}"
     end
   end
 
@@ -78,17 +87,19 @@ class ImportController < ApplicationController
   end
 
   def download_students_xlsx_template
-    response.headers["Content-Type"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    response.headers["Content-Disposition"] = "attachment; filename=students_import_template.xlsx"
+    respond_to do |format|
+      format.xlsx {
+        response.headers["Content-Type"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        response.headers["Content-Disposition"] = "attachment; filename=students_import_template.xlsx"
 
-    package = Axlsx::Package.new
-    workbook = package.workbook
+        package = Axlsx::Package.new
+        workbook = package.workbook
 
-    # Add styles
-    styles = workbook.styles
-    header_style = styles.add_style(bg_color: "366092", fg_color: "FFFFFF", b: true)
-    data_style = styles.add_style(border: Axlsx::STYLE_THIN_BORDER)
-    instruction_style = styles.add_style(bg_color: "FFF2CC", b: true)
+        # Add styles
+        styles = workbook.styles
+        header_style = styles.add_style(bg_color: "366092", fg_color: "FFFFFF", b: true)
+        data_style = styles.add_style(border: Axlsx::STYLE_THIN_BORDER)
+        instruction_style = styles.add_style(bg_color: "FFF2CC", b: true)
 
     # Template sheet
     workbook.add_worksheet(name: "Students Template") do |sheet|
@@ -113,7 +124,9 @@ class ImportController < ApplicationController
       sheet.column_widths(20, 10, 10, 10, 10, 25)
     end
 
-    send_data package.to_stream.read, filename: "students_import_template.xlsx"
+        send_data package.to_stream.read, filename: "students_import_template.xlsx"
+      }
+    end
   end
 
   def import_students
@@ -127,14 +140,14 @@ class ImportController < ApplicationController
     when ".xlsx", ".xls"
       imported_count, errors = import_students_from_excel
     else
-      redirect_to import_index_path, alert: "Unsupported file format. Please use CSV or Excel files."
+      redirect_to import_path, alert: "Unsupported file format. Please use CSV or Excel files."
       return
     end
 
     if errors.any?
-      redirect_to import_index_path, alert: "Import completed with #{imported_count} students imported. Errors: #{errors.join(', ')}"
+      redirect_to import_path, alert: "Import completed with #{imported_count} students imported. Errors: #{errors.join(', ')}"
     else
-      redirect_to import_index_path, notice: "Successfully imported #{imported_count} students."
+      redirect_to import_path, notice: "Successfully imported #{imported_count} students."
     end
   end
 
